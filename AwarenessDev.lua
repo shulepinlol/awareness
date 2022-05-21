@@ -2429,6 +2429,7 @@ WardTracker.SpriteNames = {
         "Blue_Ward_icon"
     }
 }
+WardTracker.VisionPolygons = {}
 
 function WardTracker.Initialize()
     WardTracker.LoadFonts()
@@ -2461,6 +2462,7 @@ end
 function WardTracker.LoadConfig()
     Menu.NewTree("SAwareness.WardTracker", "Ward Tracker", function()
         Common.CreateCheckbox("SAwareness.WardTracker.Enabled", "Enabled", true)
+        Common.CreateCheckbox("SAwareness.WardTracker.DrawVision", "Draw FOV", true)
         Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
         Menu.NewTree("SAwareness.WardTracker.Objects", "Track Objects", function()
             for k, v in pairs(WardTracker.MenuItems) do
@@ -2527,6 +2529,26 @@ function WardTracker.OnCreateObject(obj)
     end)
 end
 
+function WardTracker.GetWardVision(obj)
+    local points, pCount, range = {}, 36, 1000
+
+    local pos = obj.Position    
+    for i=1, pCount do
+        local angle = i * (360/pCount) * pi/180
+        local endPos = Vector(pos.x + range * cos(angle), pos.y, pos.z + range * sin(angle))
+
+        for j=25, range, 50 do
+            local pointToCheck = pos:Extended(endPos, j)
+            if pointToCheck:IsWall() or pointToCheck:IsGrass() then 
+                endPos = pointToCheck
+                break
+            end
+        end
+        points[i] = endPos:SetHeight()
+    end
+    return Geometry.Polygon(points)
+end
+
 function WardTracker.ProcessWard(obj, delayedAmount)
     local obj = obj.AsMinion
     local wardData =  obj and WardTracker.WardData[obj.CharName]
@@ -2546,6 +2568,8 @@ function WardTracker.ProcessWard(obj, delayedAmount)
             end
         end
 
+        WardTracker.VisionPolygons[obj.Handle] = WardTracker.GetWardVision(obj)
+
         WardTracker.ActiveWards[#WardTracker.ActiveWards + 1] = {
             ["EndTime"] = (wardData.Duration == huge and huge) or (Game.GetTime() + obj.AsAttackableUnit.Mana - (delayedAmount or 0)),
             ["Obj"] = obj,
@@ -2558,6 +2582,8 @@ function WardTracker.ProcessWard(obj, delayedAmount)
 end
 
 function WardTracker.OnDeleteObject(obj)
+    WardTracker.VisionPolygons[obj.Handle] = nil
+
     local obj = obj.AsMinion
     if obj and WardTracker.WardData[obj.CharName] and obj.IsEnemy then
         for k, v in pairs(WardTracker.ActiveWards) do
@@ -2577,6 +2603,7 @@ function WardTracker.OnDraw()
     if not WardTracker.Get("Enabled") then return end
 
     local drawMM = WardTracker.Get("Minimap.Enabled")
+    local drawFOV = WardTracker.Get("DrawVision")
     local drawWorld = WardTracker.Get("World.Enabled")
 
     local xOff = WardTracker.Get("World.FontOffsetX")
@@ -2623,6 +2650,9 @@ function WardTracker.OnDraw()
 
                     if wardObj then ward.Position.y = wardObj.Position.y end
                     Renderer.DrawCircle3D(ward.Position, 60, 10, 3, ward.Color)
+
+                    local fovPolygon = WardTracker.VisionPolygons[ward.Obj.Handle]
+                    if drawFOV and fovPolygon then fovPolygon:Draw(0xFFFFFF70) end
                 end
             end
 
