@@ -2651,7 +2651,7 @@ function WardTracker.OnDraw()
                     if wardObj then ward.Position.y = wardObj.Position.y end
                     Renderer.DrawCircle3D(ward.Position, 60, 10, 3, ward.Color)
 
-                    local fovPolygon = WardTracker.VisionPolygons[ward.Obj.Handle]
+                    local fovPolygon = wardObj and WardTracker.VisionPolygons[wardObj.Handle]
                     if drawFOV and fovPolygon then fovPolygon:Draw(0xFFFFFF70) end
                 end
             end
