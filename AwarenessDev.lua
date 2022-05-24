@@ -2133,6 +2133,7 @@ function MIATracker.LoadConfig()
         end)
         Menu.NewTree("SAwareness.MIATracker.World", "MIA HUD [World]", function()
             Common.CreateCheckbox("SAwareness.MIATracker.World.Enabled", "Enabled", true)
+            Common.CreateCheckbox("SAwareness.MIATracker.World.FoW", "Track In FoW", true)
             Menu.Text("Scale        - "); Menu.SameLine(); Common.CreateSlider("SAwareness.MIATracker.World.Scale", " ", 100, 0, 200, 1)
             Menu.Text("Font Family  - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.MIATracker.World.FontFamily", " ", 2, Common.FontData.FontFamily)
             Menu.Text("Font Name    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.MIATracker.World.FontName", " ", 0, Common.FontData.FontDisplayNames[MIATracker.Get("World.FontFamily") + 1])
@@ -2167,6 +2168,7 @@ function MIATracker.UpdateDrawings()
     local miaScale = MIATracker.Scale
 
     local worldEnabled = MIATracker.Get("World.Enabled")
+    local fowEnabled = MIATracker.Get("World.FoW")
     local worldScale = MIATracker.WorldScale
 
     local hud_sprite = MIATracker.Sprites.Main
@@ -2256,6 +2258,8 @@ function MIATracker.UpdateDrawings()
 
             if worldEnabled then
                 if hero.Object.IsOnScreen then
+                    hero.Object:ForceVisible(fowEnabled)
+                    
                     local hero_sprite = MIATracker.Sprites.Champions.World[charName]
                     hero_sprite:SetScale(hero_sprite.X * worldScale, hero_sprite.Y * worldScale)
 
