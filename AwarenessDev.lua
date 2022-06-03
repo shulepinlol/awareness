@@ -2466,7 +2466,7 @@ end
 function WardTracker.LoadConfig()
     Menu.NewTree("SAwareness.WardTracker", "Ward Tracker", function()
         Common.CreateCheckbox("SAwareness.WardTracker.Enabled", "Enabled", true)
-        Common.CreateCheckbox("SAwareness.WardTracker.DrawVision", "Draw FOV", true)
+        Common.CreateCheckbox("SAwareness.WardTracker.DrawVision", "Draw FOV", false)
         Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
         Menu.NewTree("SAwareness.WardTracker.Objects", "Track Objects", function()
             for k, v in pairs(WardTracker.MenuItems) do
