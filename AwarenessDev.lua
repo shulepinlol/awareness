@@ -18,7 +18,7 @@ end
 local Script = {
     Name = "Awareness",
     Version = "1.1.0",
-    LastUpdate = "11/11/1111",
+    LastUpdate = "19/06/2022",
     Initialized = false,
     Disabled = false,
     Modules = {
@@ -36,8 +36,6 @@ local Script = {
         CloneTracker = {},
         Radar = {},
         DashTracker = {},
-        BuffTracker = {},
-        WaveTracker = {},
     }
 }
 
@@ -150,18 +148,18 @@ end
 
 function TurretRange.LoadConfig()
     Menu.NewTree("SAwareness.TurretRange", "Turret Range", function()
-        
-        Menu.Separator(); Menu.Text("[General Settings]", true); Menu.Separator()
 		Common.CreateCheckbox("SAwareness.TurretRange.Enabled", "Enabled", true)
-		Common.CreateCheckbox("SAwareness.TurretRange.DrawAlly", "Draw On Ally Turrets", true)
-        Common.CreateCheckbox("SAwareness.TurretRange.DrawEnemy", "Draw On Enemy Turrets", true)
 
-        Menu.Separator(); Menu.Text("[Draw Settings]", true); Menu.Separator()
-        Menu.Text("Thickness  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.TurretRange.Thickness", " ", 3, 1, 10, 1)
-        Menu.Text("Color      -"); Menu.SameLine(); Common.CreateColorPicker("SAwareness.TurretRange.Color", " ", 0xFFFFFF00)
+        Menu.NewTree("SAwareness.TurretRange.DrawSettings", "Draw Settings", function()
+            Common.CreateCheckbox("SAwareness.TurretRange.DrawAlly", "Draw On Ally Turrets", true)
+            Common.CreateCheckbox("SAwareness.TurretRange.DrawEnemy", "Draw On Enemy Turrets", true)
+            Common.CreateSlider("SAwareness.TurretRange.Thickness", "Thickness", 3, 1, 10, 1)
+            Common.CreateColorPicker("SAwareness.TurretRange.Color", "Color", 0xFFFFFF00)
+        end)
 
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("TurretRange")
+        Menu.NewTree("SAwareness.TurretRange.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("TurretRange")
+        end)
         TurretRange.Color = bit.band(0xFFFFFF00, TurretRange.Get("Color"))
     end) 
 end
@@ -256,45 +254,36 @@ end
 
 function InhibTimer.LoadConfig()
     Menu.NewTree("SAwareness.InhibTimer", "Inhibitor Timer", function()
-
-        Menu.Separator(); Menu.Text("[General Settings]", true); Menu.Separator()
 		Common.CreateCheckbox("SAwareness.InhibTimer.Enabled", "Enabled", true)
+
         Common.CreateCheckbox("SAwareness.InhibTimer.DrawOnInhib", "Draw On Inhibitor", true)
         Common.CreateCheckbox("SAwareness.InhibTimer.DrawOnMM", "Draw On Minimap", true)
 
-		Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
-        Menu.NewTree("SAwareness.InhibTimer.WT", "Inhibitor Timer [World]", function()
-            Common.CreateCheckbox("SAwareness.InhibTimer.WT.Sprite", "Draw Sprite", true)
-            if InhibTimer.Get("WT.Sprite") then
-                Menu.Text("Sprite Scale   - "); Menu.SameLine(); Common.CreateSlider("SAwareness.InhibTimer.WT.Scale", " ", 100, 0, 200, 1)
-            end
-            Menu.Text("Font Family    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.InhibTimer.WT.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name      - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.InhibTimer.WT.FontName", " ", 0, Common.FontData.FontDisplayNames[InhibTimer.Get("WT.FontFamily") + 1])
-            Menu.Text("Font Size      - "); Menu.SameLine(); Common.CreateSlider("SAwareness.InhibTimer.WT.FontSize", " ", 20, 0, 50, 1)
-            Menu.Text("Font Color     - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.InhibTimer.WT.FontColor", " ", 0xFFFFFFFF)
-        end)
-        Menu.NewTree("SAwareness.InhibTimer.WTMM", "Inhibitor Timer [Minimap]", function()
-            Common.CreateCheckbox("SAwareness.InhibTimer.WTMM.Rect", "Draw Semi-transparent Rectangle Behing Font", true)
-            Menu.Text("")
-            Menu.Text("Font Family    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.InhibTimer.WTMM.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name      - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.InhibTimer.WTMM.FontName", " ", 0, Common.FontData.FontDisplayNames[InhibTimer.Get("WTMM.FontFamily") + 1])
-            Menu.Text("Font Size      - "); Menu.SameLine(); Common.CreateSlider("SAwareness.InhibTimer.WTMM.FontSize", " ", 18, 0, 50, 1)
-            Menu.Text("Font Color     - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.InhibTimer.WTMM.FontColor", " ", 0xFFFFFFFF)
+        Menu.NewTree("SAwareness.InhibTimer.ElementSettings", "Element Settings", function()
+            Menu.NewTree("SAwareness.InhibTimer.WT", "Inhibitor Timer [World]", function()
+                Common.CreateCheckbox("SAwareness.InhibTimer.WT.Sprite", "Draw Sprite", true)
+                if InhibTimer.Get("WT.Sprite") then
+                    Common.CreateSlider("SAwareness.InhibTimer.WT.Scale", "Sprite Scale", 100, 0, 200, 1)
+                end
+                Common.CreateSlider("SAwareness.InhibTimer.WT.FontSize", "Font Size", 20, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.InhibTimer.WT.FontColor", "Font Color", 0xFFFFFFFF)
+            end)
+            Menu.NewTree("SAwareness.InhibTimer.WTMM", "Inhibitor Timer [Minimap]", function()
+                Common.CreateCheckbox("SAwareness.InhibTimer.WTMM.Rect", "Draw Semi-transparent Rectangle Behing Font", true)
+                Menu.Text("")
+                Common.CreateSlider("SAwareness.InhibTimer.WTMM.FontSize", "Font Size", 18, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.InhibTimer.WTMM.FontColor", "Font Color", 0xFFFFFFFF)
+            end)
         end)
 
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("InhibTimer")
+        Menu.NewTree("SAwareness.InhibTimer.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("InhibTimer")
+        end)
     end)
 end
 
 function InhibTimer.Get(value)
 	return Menu.Get("SAwareness.InhibTimer." .. value, true)
-end
-
-function InhibTimer.GetFontName(element)
-    local fontFamily = InhibTimer.Get(element .. ".FontFamily") + 1
-    local fontName = InhibTimer.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function InhibTimer.OnTick()
@@ -331,7 +320,6 @@ function InhibTimer.OnDraw()
     local bDrawWorld, bDrawMM = InhibTimer.Get("DrawOnInhib"), InhibTimer.Get("DrawOnMM")
     local WT_Color, WTMM_Color = InhibTimer.Get("WT.FontColor"), InhibTimer.Get("WTMM.FontColor")
     local WT_Size, WTMM_Size = InhibTimer.Get("WT.FontSize") * InhibTimer.Scale, InhibTimer.Get("WTMM.FontSize") * InhibTimer.Scale
-    local WT_FontName, WTMM_FontName = InhibTimer.GetFontName("WT"), InhibTimer.GetFontName("WTMM")
     local WT_bg, WTMM_bg = InhibTimer.Get("WT.Sprite"), InhibTimer.Get("WTMM.Rect")
     local WT_Font, WTMM_Font = InhibTimer.Fonts.WT, InhibTimer.Fonts.WTMM
     
@@ -352,7 +340,7 @@ function InhibTimer.OnDraw()
 
                         local textExtent = WT_Font.Font:CalcTextSize(text)
                         local textVector = Vector(posw2s.x - X + (W - textExtent.x)/2, posw2s.y - Y + (H - textExtent.y)/2)
-                        WT_Font:SetColor(WT_Color):SetSize(WT_Size):SetFont(WT_FontName):Draw(textVector, text)
+                        WT_Font:SetColor(WT_Color):SetSize(WT_Size):Draw(textVector, text)
                     end
                 end
                 if bDrawMM and WTMM_Font then        
@@ -363,7 +351,7 @@ function InhibTimer.OnDraw()
                     if WTMM_bg then
                         Renderer.DrawFilledRect(textVector, textExtent, 0, 0x00000069)
                     end
-                    WTMM_Font:SetColor(WTMM_Color):SetSize(WTMM_Size):SetFont(WTMM_FontName):Draw(textVector, text) 
+                    WTMM_Font:SetColor(WTMM_Color):SetSize(WTMM_Size):Draw(textVector, text) 
                 end
             end
         end
@@ -474,87 +462,70 @@ end
 
 function SideHUD.LoadConfig()
     Menu.NewTree("SAwareness.SideHUD", "Side HUD", function()
-        
-        Menu.Separator(); Menu.Text("[General Settings]", true); Menu.Separator()
 		Common.CreateCheckbox("SAwareness.SideHUD.Enabled", "Enabled", true)
-        Common.CreateCheckbox("SAwareness.SideHUD.Drag", "Allow To Drag By SHIFT + LMB", true)
         
-        Menu.Separator(); Menu.Text("[Position Settings]", true); Menu.Separator()
-        Menu.Text("X            -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.X", " ", 100, 0, Resolution.x, 1)
-        Menu.Text("Y            -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.Y", " ", 100, 0, Resolution.y, 1)
-        Menu.Text("Scale        -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.Scale", " ", 100, 0, 200, 1)
-        Menu.Text("Space        -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.Space", " ", 0, -100, 100, 1)
-        Menu.Text("Orientation  -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.Orientation", " ", 0, {"Vertical", "Horizontal"})
-        
-        Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
-        Menu.NewTree("SAwareness.SideHUD.HP", "Health Bar", function()
-            Menu.Text("Bar Color      -"); Menu.SameLine(); Common.CreateColorPicker("SAwareness.SideHUD.HP.BarColor", " ", 0x25882EFF)
-            Menu.Text("Font Family    -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.HP.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name      -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.HP.FontName", " ", 0, Common.FontData.FontDisplayNames[SideHUD.Get("HP.FontFamily") + 1])
-            Menu.Text("Font Size      -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.HP.FontSize", " ", 20, 0, 50, 1)
-            Menu.Text("Font Color     -"); Menu.SameLine(); Common.CreateColorPicker("SAwareness.SideHUD.HP.FontColor", " ", 0xFFFFFFFF)
-            Menu.Text("Font X Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.HP.FontOffsetX", " ", 0, -200, 200, 1)
-            Menu.Text("Font Y Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.HP.FontOffsetY", " ", 0, -200, 200, 1)
-        end)
-        Menu.NewTree("SAwareness.SideHUD.MP", "Mana Bar", function()
-            Menu.Text("Bar Color      -"); Menu.SameLine(); Common.CreateColorPicker("SAwareness.SideHUD.MP.BarColor", " ", 0x3A95B9FF)
-            Menu.Text("Font Family    -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.MP.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name      -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.MP.FontName", " ", 0, Common.FontData.FontDisplayNames[SideHUD.Get("MP.FontFamily") + 1])
-            Menu.Text("Font Size      -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.MP.FontSize", " ", 20, 0, 50, 1)
-            Menu.Text("Font Color     -"); Menu.SameLine(); Common.CreateColorPicker("SAwareness.SideHUD.MP.FontColor", " ", 0xFFFFFFFF)
-            Menu.Text("Font X Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.MP.FontOffsetX", " ", 0, -200, 200, 1)
-            Menu.Text("Font Y Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.MP.FontOffsetY", " ", 0, -200, 200, 1)
-        end)
-        Menu.NewTree("SAwareness.SideHUD.Ultimate", "Ultimate Spell", function()
-            Menu.Text("Format         -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.Ultimate.Format", " ", 2, { "Seconds", "Minutes : Seconds", "Minutes (If < 1 Then Seconds)" })
-            Menu.Text("Font Family    -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.Ultimate.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name      -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.Ultimate.FontName", " ", 0, Common.FontData.FontDisplayNames[SideHUD.Get("Ultimate.FontFamily") + 1])
-            Menu.Text("Font Size      -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.Ultimate.FontSize", " ", 20, 0, 50, 1)
-            Menu.Text("Font Color     -"); Menu.SameLine(); Common.CreateColorPicker("SAwareness.SideHUD.Ultimate.FontColor", " ", 0xFFFFFFFF)
-            Menu.Text("Font X Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.Ultimate.FontOffsetX", " ", 0, -200, 200, 1)
-            Menu.Text("Font Y Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.Ultimate.FontOffsetY", " ", 0, -200, 200, 1)
-        end)
-        Menu.NewTree("SAwareness.SideHUD.Summoners", "Summoner Spells", function()
-            Menu.Text("Format         -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.Summoners.Format", " ", 2, { "Seconds", "Minutes : Seconds", "Minutes (If < 1 Then Seconds)" })
-            Menu.Text("Font Family    -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.Summoners.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name      -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.Summoners.FontName", " ", 0, Common.FontData.FontDisplayNames[SideHUD.Get("Summoners.FontFamily") + 1])
-            Menu.Text("Font Size      -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.Summoners.FontSize", " ", 16, 0, 50, 1)
-            Menu.Text("Font Color     -"); Menu.SameLine(); Common.CreateColorPicker("SAwareness.SideHUD.Summoners.FontColor", " ", 0xFFFFFFFF)
-            Menu.Text("Font X Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.Summoners.FontOffsetX", " ", 0, -200, 200, 1)
-            Menu.Text("Font Y Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.Summoners.FontOffsetY", " ", 0, -200, 200, 1)
-        end)
-        Menu.NewTree("SAwareness.SideHUD.ChampionLevel", "Champion Level", function()
-            Menu.Checkbox("SAwareness.SideHUD.ChampionLevel.Enabled", "Enabled", true)
-            Menu.Text("Font Family    -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.ChampionLevel.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name      -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.ChampionLevel.FontName", " ", 0, Common.FontData.FontDisplayNames[SideHUD.Get("Summoners.FontFamily") + 1])
-            Menu.Text("Font Size      -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.ChampionLevel.FontSize", " ", 16, 0, 50, 1)
-            Menu.Text("Font Color     -"); Menu.SameLine(); Common.CreateColorPicker("SAwareness.SideHUD.ChampionLevel.FontColor", " ", 0xFFFFFFFF)
-            Menu.Text("Font X Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.ChampionLevel.FontOffsetX", " ", 0, -200, 200, 1)
-            Menu.Text("Font Y Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.ChampionLevel.FontOffsetY", " ", 0, -200, 200, 1)
-        end)
-        Menu.NewTree("SAwareness.SideHUD.DeathTimer", "Death Timer", function()
-            Menu.Checkbox("SAwareness.SideHUD.DeathTimer.Enabled", "Enabled", true)
-            Menu.Text("Font Family    -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.DeathTimer.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name      -"); Menu.SameLine(); Common.CreateDropdown("SAwareness.SideHUD.DeathTimer.FontName", " ", 0, Common.FontData.FontDisplayNames[SideHUD.Get("Summoners.FontFamily") + 1])
-            Menu.Text("Font Size      -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.DeathTimer.FontSize", " ", 20, 0, 50, 1)
-            Menu.Text("Font Color     -"); Menu.SameLine(); Common.CreateColorPicker("SAwareness.SideHUD.DeathTimer.FontColor", " ", 0xFF2626FF)
-            Menu.Text("Font X Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.DeathTimer.FontOffsetX", " ", 0, -200, 200, 1)
-            Menu.Text("Font Y Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.SideHUD.DeathTimer.FontOffsetY", " ", 0, -200, 200, 1)
+        Menu.NewTree("SAwareness.SideHUD.PositionSettings", "Position Settings", function()
+            Common.CreateSlider("SAwareness.SideHUD.X", "X", 100, 0, Resolution.x, 1)
+            Common.CreateSlider("SAwareness.SideHUD.Y", "Y", 100, 0, Resolution.y, 1)
+            Common.CreateSlider("SAwareness.SideHUD.Scale", "Scale", 100, 0, 200, 1)
+            Common.CreateSlider("SAwareness.SideHUD.Space", "Space", 0, -100, 100, 1)
+            Common.CreateDropdown("SAwareness.SideHUD.Orientation", "Orientation", 0, {"Vertical", "Horizontal"})
+            Common.CreateCheckbox("SAwareness.SideHUD.Drag", "Allow To Drag By SHIFT + LMB", true)
         end)
         
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("SideHUD")
+        Menu.NewTree("SAwareness.SideHUD.ElementSettings", "Element Settings", function()
+            Menu.NewTree("SAwareness.SideHUD.HP", "Health Bar", function()
+                Common.CreateColorPicker("SAwareness.SideHUD.HP.BarColor", "Bar Color", 0x25882EFF)
+                Common.CreateSlider("SAwareness.SideHUD.HP.FontSize", "Font Size", 20, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.SideHUD.HP.FontColor", "Font Color", 0xFFFFFFFF)
+                Common.CreateSlider("SAwareness.SideHUD.HP.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
+                Common.CreateSlider("SAwareness.SideHUD.HP.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
+            end)
+            Menu.NewTree("SAwareness.SideHUD.MP", "Mana Bar", function()
+                Common.CreateColorPicker("SAwareness.SideHUD.MP.BarColor", "Bar Color", 0x3A95B9FF)
+                Common.CreateSlider("SAwareness.SideHUD.MP.FontSize", "Font Size", 20, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.SideHUD.MP.FontColor", "Font Color", 0xFFFFFFFF)
+                Common.CreateSlider("SAwareness.SideHUD.MP.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
+                Common.CreateSlider("SAwareness.SideHUD.MP.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
+            end)
+            Menu.NewTree("SAwareness.SideHUD.Ultimate", "Ultimate Spell", function()
+                Common.CreateDropdown("SAwareness.SideHUD.Ultimate.Format", "Format", 2, { "Seconds", "Minutes : Seconds", "Minutes (If < 1 Then Seconds)" })
+                Common.CreateSlider("SAwareness.SideHUD.Ultimate.FontSize", "Font Size", 20, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.SideHUD.Ultimate.FontColor", "Font Color", 0xFFFFFFFF)
+                Common.CreateSlider("SAwareness.SideHUD.Ultimate.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
+                Common.CreateSlider("SAwareness.SideHUD.Ultimate.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
+            end)
+            Menu.NewTree("SAwareness.SideHUD.Summoners", "Summoner Spells", function()
+                Common.CreateDropdown("SAwareness.SideHUD.Summoners.Format", "Format", 2, { "Seconds", "Minutes : Seconds", "Minutes (If < 1 Then Seconds)" })
+                Common.CreateSlider("SAwareness.SideHUD.Summoners.FontSize", "Font Size", 16, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.SideHUD.Summoners.FontColor", "Font Color", 0xFFFFFFFF)
+                Common.CreateSlider("SAwareness.SideHUD.Summoners.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
+                Common.CreateSlider("SAwareness.SideHUD.Summoners.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
+            end)
+            Menu.NewTree("SAwareness.SideHUD.ChampionLevel", "Champion Level", function()
+                Menu.Checkbox("SAwareness.SideHUD.ChampionLevel.Enabled", "Enabled", true)
+                Common.CreateSlider("SAwareness.SideHUD.ChampionLevel.FontSize", "Font Size", 16, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.SideHUD.ChampionLevel.FontColor", "Font Color", 0xFFFFFFFF)
+                Common.CreateSlider("SAwareness.SideHUD.ChampionLevel.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
+                Common.CreateSlider("SAwareness.SideHUD.ChampionLevel.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
+            end)
+            Menu.NewTree("SAwareness.SideHUD.DeathTimer", "Death Timer", function()
+                Menu.Checkbox("SAwareness.SideHUD.DeathTimer.Enabled", "Enabled", true)
+                Common.CreateSlider("SAwareness.SideHUD.DeathTimer.FontSize", "Font Size", 20, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.SideHUD.DeathTimer.FontColor", "Font Color", 0xFF2626FF)
+                Common.CreateSlider("SAwareness.SideHUD.DeathTimer.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
+                Common.CreateSlider("SAwareness.SideHUD.DeathTimer.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
+            end)
+        end)
+        
+        Menu.NewTree("SAwareness.SideHUD.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("SideHUD")
+        end)
     end)
 end
 
 function SideHUD.Get(value)
 	return Menu.Get("SAwareness.SideHUD." .. value, true)
-end
-
-function SideHUD.GetFontName(element)
-    local fontFamily = SideHUD.Get(element .. ".FontFamily") + 1
-    local fontName = SideHUD.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function SideHUD.UpdateSprites(sprites, scale)
@@ -572,7 +543,6 @@ function SideHUD.UpdateFonts(fonts, scale)
     for name, font in pairs(fonts) do
         font:SetColor(SideHUD.Get(name..".FontColor"))
         font:SetSize(SideHUD.Get(name..".FontSize") * scale)
-        font:SetFont(SideHUD.GetFontName(name))
     end
 end
 
@@ -1002,78 +972,67 @@ end
 
 function CDTracker.LoadConfig()
     Menu.NewTree("SAwareness.CDTracker", "CD Tracker", function()
-        Menu.Separator(); Menu.Text("[General Settings]", true); Menu.Separator()
 		Common.CreateCheckbox("SAwareness.CDTracker.Enabled", "Enabled", true)
-        -- Common.CreateCheckbox("SAwareness.CDTracker.DrawOnMe", "Draw On Me", true)
-        Common.CreateCheckbox("SAwareness.CDTracker.DrawOnAlly", "Draw On Ally", true)
-        Common.CreateCheckbox("SAwareness.CDTracker.DrawOnEnemy", "Draw On Enemy", true)
         
-        Menu.Separator(); Menu.Text("[Appearance Settings]", true); Menu.Separator()
-        Common.CreateDropdown("SAwareness.CDTracker.Appearance", " ", 0, { "Style 1", "Style 2" })
-        
-        Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
-        Menu.NewTree("SAwareness.CDTracker.SpellCD", "Spell CD", function()
-            Menu.Text("X Offset           - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.SpellCD.X", " ", 0, -100, 100, 1)
-            Menu.Text("Y Offset           - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.SpellCD.Y", " ", 0, -100, 100, 1)
-            Menu.Text("Scale              - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.SpellCD.Scale", " ", 100, 0, 200, 1)
-            if CDTracker.Get("Appearance") == 0 then
-                Menu.Text("Spell Ready Color  - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.CDTracker.SpellCD.ReadyColor", " ", 0x00FF25FF)
-                Menu.Text("Spell CD Color     - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.CDTracker.SpellCD.CDColor", " ", 0xFFE100FF)
-                Menu.Text("Font Position      - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.CDTracker.SpellCD.FontPosition", " ", 0, { "Bottom of the bar", "Top of the bar" })
-            end
-            Menu.Text("Font Family        - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.CDTracker.SpellCD.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name          - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.CDTracker.SpellCD.FontName", " ", 0, Common.FontData.FontDisplayNames[CDTracker.Get("SpellCD.FontFamily") + 1])
-            Menu.Text("Font Size          - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.SpellCD.FontSize", " ", 16, 0, 50, 1)
-            Menu.Text("Font Color         - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.CDTracker.SpellCD.FontColor", " ", 0xFFFFFFFF)
-            Menu.Text("Font X Offset      - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.SpellCD.FontOffsetX", " ", 0, -200, 200, 1)
-            Menu.Text("Font Y Offset      - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.SpellCD.FontOffsetY", " ", 0, -200, 200, 1)
-        end)
-        Menu.NewTree("SAwareness.CDTracker.SummonerCD", "Summoner Spell CD", function()
-            Common.CreateCheckbox("SAwareness.CDTracker.SummonerCD.Enabled", "Draw Summoner Spells", true)
-            Menu.Text("Position       - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.CDTracker.SummonerCD.Position", " ", 1, { "Left", "Right" })
-            Menu.Text("X Offset       - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.SummonerCD.X", " ", 0, -500, 500, 1)
-            Menu.Text("Y Offset       - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.SummonerCD.Y", " ", 0, -500, 500, 1)
-            Menu.Text("Scale          - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.SummonerCD.Scale", " ", 100, 0, 200, 1)
-            Menu.Text("Format         - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.CDTracker.SummonerCD.Format", " ", 1, { "Seconds", "Minutes:Seconds", "Minutes (If < 1 Then Seconds)" })
-            Menu.Text("Font Family    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.CDTracker.SummonerCD.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name      - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.CDTracker.SummonerCD.FontName", " ", 0, Common.FontData.FontDisplayNames[CDTracker.Get("SummonerCD.FontFamily") + 1])
-            Menu.Text("Font Size      - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.SummonerCD.FontSize", " ", 15, 0, 50, 1)
-            Menu.Text("Font Color     - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.CDTracker.SummonerCD.FontColor", " ", 0xFFFFFFFF)
-        end)
-        Menu.NewTree("SAwareness.CDTracker.Exp", "Experience Bar", function()
-            Common.CreateCheckbox("SAwareness.CDTracker.ExpBar.Enabled", "Draw Experience Bar", true)
-            Menu.Text("X Offset   - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.ExpBar.X", " ", 0, -500, 500, 1)
-            Menu.Text("Y Offset   - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.ExpBar.Y", " ", 0, -500, 500, 1)
-            Menu.Text("Scale      - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.ExpBar.Scale", " ", 100, 0, 200, 1)
-            Menu.Text("Thickness  - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.ExpBar.Thickness", " ", 2, 0, 10, 1)
-            Menu.Text("Bar Color  - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.CDTracker.ExpBar.BarColor", "", 0xFFB600FF)
-        end)
-        Menu.NewTree("SAwareness.CDTracker.PassiveCD", "Passive CD", function()
-            Common.CreateCheckbox("SAwareness.CDTracker.PassiveCD.Enabled", "Draw Passive CD", true)
-            Menu.Text("X Offset      - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.PassiveCD.X", " ", 0, -500, 500, 1)
-            Menu.Text("Y Offset      - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.PassiveCD.Y", " ", 0, -500, 500, 1)
-            Menu.Text("Scale         - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.PassiveCD.Scale", " ", 100, 0, 200, 1)
-            Menu.Text("Font Family   - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.CDTracker.PassiveCD.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name     - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.CDTracker.PassiveCD.FontName", " ", 0, Common.FontData.FontDisplayNames[CDTracker.Get("PassiveCD.FontFamily") + 1])
-            Menu.Text("Font Size     - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.PassiveCD.FontSize", " ", 16, 0, 50, 1)
-            Menu.Text("Font Color    - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.CDTracker.PassiveCD.FontColor", " ", 0xFFFFFFFF)
-            Menu.Text("Font X Offset - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.PassiveCD.FontOffsetX", " ", 0, -200, 200, 1)
-            Menu.Text("Font Y Offset - "); Menu.SameLine(); Common.CreateSlider("SAwareness.CDTracker.PassiveCD.FontOffsetY", " ", 0, -200, 200, 1)
+        Menu.NewTree("SAwareness.CDTracker.AppearanceSettings", "Appearance Settings", function()
+            Common.CreateCheckbox("SAwareness.CDTracker.DrawOnAlly", "Draw On Ally", true)
+            Common.CreateCheckbox("SAwareness.CDTracker.DrawOnEnemy", "Draw On Enemy", true)
+            Common.CreateDropdown("SAwareness.CDTracker.Appearance", "Tracker Style", 0, { "Bars", "Icons" })
         end)
         
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("CDTracker")
+        Menu.NewTree("SAwareness.CDTracker.ElementSettings", "Element Settings", function()
+            Menu.NewTree("SAwareness.CDTracker.SpellCD", "Spell CD", function()
+                Common.CreateSlider("SAwareness.CDTracker.SpellCD.X", "X Offset", 0, -100, 100, 1)
+                Common.CreateSlider("SAwareness.CDTracker.SpellCD.Y", "Y Offset", 0, -100, 100, 1)
+                Common.CreateSlider("SAwareness.CDTracker.SpellCD.Scale", "Scale", 100, 0, 200, 1)
+                if CDTracker.Get("Appearance") == 0 then
+                    Common.CreateColorPicker("SAwareness.CDTracker.SpellCD.ReadyColor", "Spell Ready Color", 0x00FF25FF)
+                    Common.CreateColorPicker("SAwareness.CDTracker.SpellCD.CDColor", "Spell CD Color", 0xFFE100FF)
+                    Common.CreateDropdown("SAwareness.CDTracker.SpellCD.FontPosition", "Font Position", 0, { "Bottom of the bar", "Top of the bar" })
+                end
+                Common.CreateSlider("SAwareness.CDTracker.SpellCD.FontSize", "Font Size", 16, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.CDTracker.SpellCD.FontColor", "Font Color", 0xFFFFFFFF)
+                Common.CreateSlider("SAwareness.CDTracker.SpellCD.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
+                Common.CreateSlider("SAwareness.CDTracker.SpellCD.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
+            end)
+            Menu.NewTree("SAwareness.CDTracker.SummonerCD", "Summoner Spell CD", function()
+                Common.CreateCheckbox("SAwareness.CDTracker.SummonerCD.Enabled", "Draw Summoner Spells", true)
+                Common.CreateDropdown("SAwareness.CDTracker.SummonerCD.Position", "Position", 1, { "Left", "Right" })
+                Common.CreateSlider("SAwareness.CDTracker.SummonerCD.X", "X Offset", 0, -500, 500, 1)
+                Common.CreateSlider("SAwareness.CDTracker.SummonerCD.Y", "Y Offset", 0, -500, 500, 1)
+                Common.CreateSlider("SAwareness.CDTracker.SummonerCD.Scale", "Scale", 100, 0, 200, 1)
+                Common.CreateDropdown("SAwareness.CDTracker.SummonerCD.Format", "Format", 1, { "Seconds", "Minutes:Seconds", "Minutes (If < 1 Then Seconds)" })
+                Common.CreateSlider("SAwareness.CDTracker.SummonerCD.FontSize", "Font Size", 15, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.CDTracker.SummonerCD.FontColor", "Font Color", 0xFFFFFFFF)
+            end)
+            Menu.NewTree("SAwareness.CDTracker.Exp", "Experience Bar", function()
+                Common.CreateCheckbox("SAwareness.CDTracker.ExpBar.Enabled", "Draw Experience Bar", true)
+                Common.CreateSlider("SAwareness.CDTracker.ExpBar.X", "X Offset", 0, -500, 500, 1)
+                Common.CreateSlider("SAwareness.CDTracker.ExpBar.Y", "Y Offset", 0, -500, 500, 1)
+                Common.CreateSlider("SAwareness.CDTracker.ExpBar.Scale", "Scale", 100, 0, 200, 1)
+                Common.CreateSlider("SAwareness.CDTracker.ExpBar.Thickness", "Thickness", 2, 0, 10, 1)
+                Common.CreateColorPicker("SAwareness.CDTracker.ExpBar.BarColor", "Bar Color", 0xFFB600FF)
+            end)
+            Menu.NewTree("SAwareness.CDTracker.PassiveCD", "Passive CD", function()
+                Common.CreateCheckbox("SAwareness.CDTracker.PassiveCD.Enabled", "Draw Passive CD", true)
+                Common.CreateSlider("SAwareness.CDTracker.PassiveCD.X", "X Offset", 0, -500, 500, 1)
+                Common.CreateSlider("SAwareness.CDTracker.PassiveCD.Y", "Y Offset", 0, -500, 500, 1)
+                Common.CreateSlider("SAwareness.CDTracker.PassiveCD.Scale", "Scale", 100, 0, 200, 1)
+                Common.CreateSlider("SAwareness.CDTracker.PassiveCD.FontSize", "Font Size", 16, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.CDTracker.PassiveCD.FontColor", "Font Color", 0xFFFFFFFF)
+                Common.CreateSlider("SAwareness.CDTracker.PassiveCD.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
+                Common.CreateSlider("SAwareness.CDTracker.PassiveCD.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
+            end)
+        end)
+        
+        Menu.NewTree("SAwareness.CDTracker.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("CDTracker")
+        end)
     end)
 end
 
 function CDTracker.Get(value)
 	return Menu.Get("SAwareness.CDTracker." .. value, true)
-end
-
-function CDTracker.GetFontName(element)
-    local fontFamily = CDTracker.Get(element .. ".FontFamily") + 1
-    local fontName = CDTracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function CDTracker.ShouldDraw(hero)
@@ -1127,7 +1086,6 @@ function CDTracker.UpdatePassiveCD(heroList)
     local fontCD = CDTracker.Fonts.CD
     local fontColor = CDTracker.Get("PassiveCD.FontColor")
     local fontSize = CDTracker.Get("PassiveCD.FontSize") * passiveScale
-    local fontName = CDTracker.GetFontName("PassiveCD")
     local rectangleSize = {x = 26 * passiveScale, y = 26 * passiveScale}
     local fontOffsetX = CDTracker.Get("PassiveCD.FontOffsetX")
     local fontOffsetY = CDTracker.Get("PassiveCD.FontOffsetY")        
@@ -1159,7 +1117,7 @@ function CDTracker.UpdatePassiveCD(heroList)
                 end)
 
                 local text = format((passiveCD < 1 and "%.1f") or "%d", passiveCD)
-                fontCD:SetColor(fontColor):SetSize(fontSize):SetFont(fontName)
+                fontCD:SetColor(fontColor):SetSize(fontSize)
                 insert(CDTracker.DrawQueue, function() 
                     local hpBar = hero.Object.HealthBarScreenPos
                     local textExtent = fontCD.Font:CalcTextSize(text)
@@ -1199,9 +1157,8 @@ function CDTracker.UpdateSpellCD(heroList)
     local fontPos_CD = CDTracker.Get("SpellCD.FontPosition") == 1 and 2 + font_CD.Size or 0
     local fontColor_CD = CDTracker.Get("SpellCD.FontColor")
     local fontSize_CD = CDTracker.Get("SpellCD.FontSize") * cdScale
-    local fontName_CD = CDTracker.GetFontName("SpellCD")
 
-    font_CD:SetColor(fontColor_CD):SetSize(fontSize_CD):SetFont(fontName_CD)
+    font_CD:SetColor(fontColor_CD):SetSize(fontSize_CD)
     
     local cdRectangleSize = {x = 26 * cdScale, y = 26 * cdScale}
 
@@ -1289,12 +1246,11 @@ function CDTracker.UpdateSummonerCD(heroList)
         Format = CDTracker.Get("SummonerCD.Format"),
         FontColor = CDTracker.Get("SummonerCD.FontColor"),
         FontSize  = CDTracker.Get("SummonerCD.FontSize") * sumScale,
-        FontName  = CDTracker.GetFontName("SummonerCD"),
 
         Font = CDTracker.Fonts.SummonerCD,
         FontPos = CDTracker.Get("SummonerCD.FontPosition") == 1 and 2 + CDTracker.Fonts.SummonerCD.Size or 0
     }
-    SummonerCD.Font:SetColor(SummonerCD.FontColor):SetSize(SummonerCD.FontSize):SetFont(SummonerCD.FontName)
+    SummonerCD.Font:SetColor(SummonerCD.FontColor):SetSize(SummonerCD.FontSize)
 
     local sumRectangleSize = {x = 23 * sumScale, y = 23 * sumScale}
     local swapSumMenu = CDTracker.Get("SummonerCD.Position") == 0
@@ -1444,36 +1400,32 @@ end
 function RecallTracker.LoadConfig()
     Menu.NewTree("SAwareness.RecallTracker", "Recall Tracker", function()
         Common.CreateCheckbox("SAwareness.RecallTracker.Enabled", "Enabled", true)
-        Common.CreateCheckbox("SAwareness.RecallTracker.Drag", "Allow To Drag By SHIFT + LMB", true)
-        Menu.Separator(); Menu.Text("[Position Settings]", true); Menu.Separator()
-        Menu.Text("X            - "); Menu.SameLine(); Common.CreateSlider("SAwareness.RecallTracker.X", " ", 500, 0, Resolution.x, 1)
-        Menu.Text("Y            - "); Menu.SameLine(); Common.CreateSlider("SAwareness.RecallTracker.Y", " ", 100, 0, Resolution.y, 1)
-        Menu.Text("Height       - "); Menu.SameLine(); Common.CreateSlider("SAwareness.RecallTracker.Height", " ", 400, 0, Resolution.x, 1)
-        Menu.Text("Width        - "); Menu.SameLine(); Common.CreateSlider("SAwareness.RecallTracker.Width", " ", 20, 0, Resolution.x, 1)
-        Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
-        Menu.NewTree("SAwareness.RecallTracker.Bar", "Recall Bar", function()
-            Menu.Text("Bar Color            - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.RecallTracker.Bar.Color", " ", 0x000000B4)
-            Menu.Text("Border Color         - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.RecallTracker.Bar.BorderColor", " ", 0x796C43FF)
-            Menu.Text("Active Recall Color  - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.RecallTracker.Bar.RecallColor", " ", 0x82D2E6B4)
-            Menu.Text("Interrupted Color    - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.RecallTracker.Bar.InterruptedRecallColor", " ", 0xFF373750)
-            Menu.Text("Font Family          - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.RecallTracker.Bar.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name            - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.RecallTracker.Bar.FontName", " ", 0, Common.FontData.FontDisplayNames[RecallTracker.Get("Bar.FontFamily") + 1])
-            Menu.Text("Font Size            - "); Menu.SameLine(); Common.CreateSlider("SAwareness.RecallTracker.Bar.FontSize", " ", 16, 0, 50, 1)
-            Menu.Text("Font Color           - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.RecallTracker.Bar.FontColor", " ", 0xFFFFFFFF)
+
+        Menu.NewTree("SAwareness.RecallTracker.PositionSettings", "Position Settings", function()
+            Common.CreateSlider("SAwareness.RecallTracker.X", "X", 500, 0, Resolution.x, 1)
+            Common.CreateSlider("SAwareness.RecallTracker.Y", "Y", 100, 0, Resolution.y, 1)
+            Common.CreateSlider("SAwareness.RecallTracker.Height", "Height", 400, 0, Resolution.x, 1)
+            Common.CreateSlider("SAwareness.RecallTracker.Width", "Width", 20, 0, Resolution.x, 1)
+            Common.CreateCheckbox("SAwareness.RecallTracker.Drag", "Allow To Drag By SHIFT + LMB", true)
         end)
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("RecallTracker")
+
+        Menu.NewTree("SAwareness.RecallTracker.Bar", "Recall Bar Settings", function()
+            Common.CreateColorPicker("SAwareness.RecallTracker.Bar.Color", "Bar Color", 0x000000B4)
+            Common.CreateColorPicker("SAwareness.RecallTracker.Bar.BorderColor", "Border Color", 0x796C43FF)
+            Common.CreateColorPicker("SAwareness.RecallTracker.Bar.RecallColor", "Active Recall Color", 0x82D2E6B4)
+            Common.CreateColorPicker("SAwareness.RecallTracker.Bar.InterruptedRecallColor", "Interrupted Color", 0xFF373750)
+            Common.CreateSlider("SAwareness.RecallTracker.Bar.FontSize", "Font Size", 16, 0, 50, 1)
+            Common.CreateColorPicker("SAwareness.RecallTracker.Bar.FontColor", "Font Color", 0xFFFFFFFF)
+        end)
+
+        Menu.NewTree("SAwareness.RecallTracker.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("RecallTracker")
+        end)
     end)
 end
 
 function RecallTracker.Get(value)
 	return Menu.Get("SAwareness.RecallTracker." .. value, true)
-end
-
-function RecallTracker.GetFontName(element)
-    local fontFamily = RecallTracker.Get(element .. ".FontFamily") + 1
-    local fontName = RecallTracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function RecallTracker.OnDraw()
@@ -1526,7 +1478,6 @@ function RecallTracker.OnDraw()
                         font
                             :SetColor(RecallTracker.Get("Bar.FontColor"))
                             :SetSize(RecallTracker.Get("Bar.FontSize"))
-                            :SetFont(RecallTracker.GetFontName("Bar"))
                             :Draw(textVector, text)
                     end
                 elseif v.Status == "Interrupted" then
@@ -1548,7 +1499,6 @@ function RecallTracker.OnDraw()
                             font
                                 :SetColor(0xFF3737FF)
                                 :SetSize(RecallTracker.Get("Bar.FontSize"))
-                                :SetFont(RecallTracker.GetFontName("Bar"))
                                 :Draw(textVector, text)
                         end
                     end
@@ -1568,7 +1518,6 @@ function RecallTracker.OnDraw()
                         font
                             :SetColor(0x0FBBFFFF)
                             :SetSize(RecallTracker.Get("Bar.FontSize"))
-                            :SetFont(RecallTracker.GetFontName("Bar"))
                             :Draw(textVector, text)
                     end
                 end
@@ -1875,39 +1824,35 @@ end
 function PathTracker.LoadConfig()
     Menu.NewTree("SAwareness.PathTracker", "Path Tracker", function()
         Common.CreateCheckbox("SAwareness.PathTracker.Enabled", "Enabled", true)
-        Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
-        Menu.NewTree("SAwareness.PathTracker.ChampionIcon", "Champion Icon", function()
-            Menu.Text("Sprite Scale   - "); Menu.SameLine(); Common.CreateSlider("SAwareness.PathTracker.ChampionIcon.Scale", " ", 100, 0, 200, 1)
+        
+        Menu.NewTree("SAwareness.PathTracker.ElementSettings", "Element Settings", function()
+            Menu.NewTree("SAwareness.PathTracker.ChampionIcon", "Champion Icon", function()
+                Common.CreateSlider("SAwareness.PathTracker.ChampionIcon.Scale", "Sprite Scale", 100, 0, 200, 1)
+            end)
+            Menu.NewTree("SAwareness.PathTracker.IconBorder", "Icon Border", function()
+                Common.CreateCheckbox("SAwareness.PathTracker.IconBorder.Enabled", "Draw Icon Border", true)
+                Common.CreateColorPicker("SAwareness.PathTracker.IconBorder.Color", "Color", 0xC3C3C3A5)
+                Common.CreateSlider("SAwareness.PathTracker.IconBorder.Thickness", "Thickness", 3, 1, 10, 1)
+            end)
+            Menu.NewTree("SAwareness.PathTracker.ETA", "ETA Timer", function()
+                Common.CreateCheckbox("SAwareness.PathTracker.ETA.Enabled", "Draw ETA", true)
+                Common.CreateSlider("SAwareness.PathTracker.ETA.FontSize", "Font Size", 16, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.PathTracker.ETA.FontColor", "Font Color", 0xFFFFFFFF)
+            end)
+            Menu.NewTree("SAwareness.PathTracker.Line", "Path Line", function()
+                Common.CreateColorPicker("SAwareness.PathTracker.Line.Color", "Color", 0xC3C3C3A5)
+                Common.CreateSlider("SAwareness.PathTracker.Line.Thickness", "Thickness", 3, 1, 10, 1)
+            end)
         end)
-        Menu.NewTree("SAwareness.PathTracker.IconBorder", "Icon Border", function()
-            Common.CreateCheckbox("SAwareness.PathTracker.IconBorder.Enabled", "Draw Icon Border", true)
-            Menu.Text("Color     - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.PathTracker.IconBorder.Color", " ", 0xC3C3C3A5)
-            Menu.Text("Thickness - "); Menu.SameLine(); Common.CreateSlider("SAwareness.PathTracker.IconBorder.Thickness", " ", 3, 1, 10, 1)
+
+        Menu.NewTree("SAwareness.PathTracker.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("PathTracker")
         end)
-        Menu.NewTree("SAwareness.PathTracker.ETA", "ETA Timer", function()
-            Common.CreateCheckbox("SAwareness.PathTracker.ETA.Enabled", "Draw ETA", true)
-            Menu.Text("Font Family  - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.PathTracker.ETA.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.PathTracker.ETA.FontName", " ", 0, Common.FontData.FontDisplayNames[PathTracker.Get("ETA.FontFamily") + 1])
-            Menu.Text("Font Size    - "); Menu.SameLine(); Common.CreateSlider("SAwareness.PathTracker.ETA.FontSize", " ", 16, 0, 50, 1)
-            Menu.Text("Font Color   - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.PathTracker.ETA.FontColor", " ", 0xFFFFFFFF)
-        end)
-        Menu.NewTree("SAwareness.PathTracker.Line", "Path Line", function()
-            Menu.Text("Color     - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.PathTracker.Line.Color", " ", 0xC3C3C3A5)
-            Menu.Text("Thickness - "); Menu.SameLine(); Common.CreateSlider("SAwareness.PathTracker.Line.Thickness", " ", 3, 1, 10, 1)
-        end)
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("PathTracker")
     end)
 end
 
 function PathTracker.Get(value)
 	return Menu.Get("SAwareness.PathTracker." .. value, true)
-end
-
-function PathTracker.GetFontName(element)
-    local fontFamily = PathTracker.Get(element .. ".FontFamily") + 1
-    local fontName = PathTracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function PathTracker.GetETA(hero, waypoints, curWP)
@@ -1993,7 +1938,6 @@ function PathTracker.OnTick()
     local font = PathTracker.Fonts.Main
     font:SetColor(PathTracker.Get("ETA.FontColor"))
     font:SetSize(PathTracker.Get("ETA.FontSize") * PathTracker.Scale)
-    font:SetFont(PathTracker.GetFontName("ETA"))
 
     local time = Game.GetTime()
     for handle, data in pairs(PathTracker.Data) do
@@ -2106,53 +2050,47 @@ end
 function MIATracker.LoadConfig()
     Menu.NewTree("SAwareness.MIATracker", "MIA Tracker", function()
         Common.CreateCheckbox("SAwareness.MIATracker.Enabled", "Enabled", true)
-        Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
-        Menu.NewTree("SAwareness.MIATracker.Minimap", "MIA HUD [Minimap]", function()
-            Menu.Text("X Offset            - "); Menu.SameLine(); Common.CreateSlider("SAwareness.MIATracker.Minimap.X", " ", 0, -100, 100, 1)
-            Menu.Text("Y Offset            - "); Menu.SameLine(); Common.CreateSlider("SAwareness.MIATracker.Minimap.Y", " ", 0, -100, 100, 1)
-            Menu.Text("Scale               - "); Menu.SameLine(); Common.CreateSlider("SAwareness.MIATracker.Minimap.Scale", " ", 100, 0, 200, 1)
-            Menu.Text("Sprite Transparency - "); Menu.SameLine(); Common.CreateSlider("SAwareness.MIATracker.Minimap.Alpha", " ", 255, 0, 255, 1)
-            Menu.Text("Border Color        - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.MIATracker.Minimap.BorderColor", " ", 0xFFF800FF)
-            Menu.Text("", true)
-            Common.CreateCheckbox("SAwareness.MIATracker.Minimap.DrawTimer", "Draw MIA Timer", true)
-            if MIATracker.Get("Minimap.DrawTimer") then
-                Common.CreateCheckbox("SAwareness.MIATracker.Minimap.DrawRect", "Draw Semi-transparent Rectangle Behing Font", true)
-                Menu.Text("Font Family  - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.MIATracker.Minimap.FontFamily", " ", 2, Common.FontData.FontFamily)
-                Menu.Text("Font Name    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.MIATracker.Minimap.FontName", " ", 0, Common.FontData.FontDisplayNames[MIATracker.Get("Minimap.FontFamily") + 1])
-                Menu.Text("Font Size    - "); Menu.SameLine(); Common.CreateSlider("SAwareness.MIATracker.Minimap.FontSize", " ", 16, 0, 50, 1)
-                Menu.Text("Font Color   - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.MIATracker.Minimap.FontColor", " ", 0xFFFFFFFF)
-            end
+        
+        Menu.NewTree("SAwareness.MIATracker.ElementSettings", "Element Settings", function()
+            Menu.NewTree("SAwareness.MIATracker.Minimap", "MIA HUD [Minimap]", function()
+                Common.CreateSlider("SAwareness.MIATracker.Minimap.X", "X Offset", 0, -100, 100, 1)
+                Common.CreateSlider("SAwareness.MIATracker.Minimap.Y", "Y Offset", 0, -100, 100, 1)
+                Common.CreateSlider("SAwareness.MIATracker.Minimap.Scale", "Scale", 100, 0, 200, 1)
+                Common.CreateSlider("SAwareness.MIATracker.Minimap.Alpha", "Sprite Transparency", 255, 0, 255, 1)
+                Common.CreateColorPicker("SAwareness.MIATracker.Minimap.BorderColor", "Border Color", 0xFFF800FF)
+                Menu.Text("", true)
+                Common.CreateCheckbox("SAwareness.MIATracker.Minimap.DrawTimer", "Draw MIA Timer", true)
+                if MIATracker.Get("Minimap.DrawTimer") then
+                    Common.CreateCheckbox("SAwareness.MIATracker.Minimap.DrawRect", "Draw Semi-transparent Rectangle Behing Font", true)
+                    Common.CreateSlider("SAwareness.MIATracker.Minimap.FontSize", "Font Size", 16, 0, 50, 1)
+                    Common.CreateColorPicker("SAwareness.MIATracker.Minimap.FontColor", "Font Color", 0xFFFFFFFF)
+                end
+            end)
+            Menu.NewTree("SAwareness.MIATracker.MovementCircle", "MIA Movement Circle [Minimap]", function()
+                Common.CreateCheckbox("SAwareness.MIATracker.MovementCircle.Enabled", "Draw Movement Circle [Temporarily Disabled] ", true)
+                if MIATracker.Get("MovementCircle.Enabled") then
+                    Common.CreateSlider("SAwareness.MIATracker.MovementCircle.Dist", "Travel Distance", 9000, 0, 15000, 1)
+                    Common.CreateColorPicker("SAwareness.MIATracker.MovementCircle.Color", "Circle Color", 0xFFFC008C)
+                    Common.CreateSlider("SAwareness.MIATracker.MovementCircle.Thickness", "Circle Thickness", 1, 1, 10, 1)
+                end
+            end)
+            Menu.NewTree("SAwareness.MIATracker.World", "MIA HUD [World]", function()
+                Common.CreateCheckbox("SAwareness.MIATracker.World.Enabled", "Enabled", true)
+                Common.CreateCheckbox("SAwareness.MIATracker.World.FoW", "Track In FoW", true)
+                Common.CreateSlider("SAwareness.MIATracker.World.Scale", "Scale", 100, 0, 200, 1)
+                Common.CreateSlider("SAwareness.MIATracker.World.FontSize", "Font Size", 16, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.MIATracker.World.FontColor", "Font Color", 0xFFFFFFFF)
+            end)
         end)
-        Menu.NewTree("SAwareness.MIATracker.MovementCircle", "MIA Movement Circle [Minimap]", function()
-            Common.CreateCheckbox("SAwareness.MIATracker.MovementCircle.Enabled", "Draw Movement Circle [Temporarily Disabled] ", true)
-            if MIATracker.Get("MovementCircle.Enabled") then
-                Menu.Text("Travel Distance  - "); Menu.SameLine(); Common.CreateSlider("SAwareness.MIATracker.MovementCircle.Dist", " ", 9000, 0, 15000, 1)
-                Menu.Text("Circle Color     - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.MIATracker.MovementCircle.Color", " ", 0xFFFC008C)
-                Menu.Text("Circle Thickness - "); Menu.SameLine(); Common.CreateSlider("SAwareness.MIATracker.MovementCircle.Thickness", " ", 1, 1, 10, 1)
-            end
+
+        Menu.NewTree("SAwareness.MIATracker.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("MIATracker")
         end)
-        Menu.NewTree("SAwareness.MIATracker.World", "MIA HUD [World]", function()
-            Common.CreateCheckbox("SAwareness.MIATracker.World.Enabled", "Enabled", true)
-            Common.CreateCheckbox("SAwareness.MIATracker.World.FoW", "Track In FoW", true)
-            Menu.Text("Scale        - "); Menu.SameLine(); Common.CreateSlider("SAwareness.MIATracker.World.Scale", " ", 100, 0, 200, 1)
-            Menu.Text("Font Family  - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.MIATracker.World.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.MIATracker.World.FontName", " ", 0, Common.FontData.FontDisplayNames[MIATracker.Get("World.FontFamily") + 1])
-            Menu.Text("Font Size    - "); Menu.SameLine(); Common.CreateSlider("SAwareness.MIATracker.World.FontSize", " ", 16, 0, 50, 1)
-            Menu.Text("Font Color   - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.MIATracker.World.FontColor", " ", 0xFFFFFFFF)
-        end)
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("MIATracker")
     end)
 end
 
 function MIATracker.Get(value)
 	return Menu.Get("SAwareness.MIATracker." .. value, true)
-end
-
-function MIATracker.GetFontName(element)
-    local fontFamily = MIATracker.Get(element .. ".FontFamily") + 1
-    local fontName = MIATracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function MIATracker.UpdateDrawings()
@@ -2180,12 +2118,10 @@ function MIATracker.UpdateDrawings()
     local fontWorld = MIATracker.Fonts.World
     fontWorld:SetColor(MIATracker.Get("World.FontColor"))
     fontWorld:SetSize(MIATracker.Get("World.FontSize") * miaScale)
-    fontWorld:SetFont(MIATracker.GetFontName("World"))
 
     local fontMM = MIATracker.Fonts.Minimap
     fontMM:SetColor(MIATracker.Get("Minimap.FontColor"))
     fontMM:SetSize(MIATracker.Get("Minimap.FontSize") * miaScale)
-    fontMM:SetFont(MIATracker.GetFontName("Minimap"))
 
     local mmRectDraw = MIATracker.Get("Minimap.DrawRect")
     local mmCircleDraw = MIATracker.Get("MovementCircle.Enabled")
@@ -2467,39 +2403,35 @@ function WardTracker.LoadConfig()
     Menu.NewTree("SAwareness.WardTracker", "Ward Tracker", function()
         Common.CreateCheckbox("SAwareness.WardTracker.Enabled", "Enabled", true)
         Common.CreateCheckbox("SAwareness.WardTracker.DrawVision", "Draw FOV", false)
-        Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
-        Menu.NewTree("SAwareness.WardTracker.Objects", "Track Objects", function()
-            for k, v in pairs(WardTracker.MenuItems) do
-                Common.CreateCheckbox("SAwareness.WardTracker.Objects." .. k, v, true)
-            end
+        
+        Menu.NewTree("SAwareness.WardTracker.ElementSettings", "Element Settings", function()
+            Menu.NewTree("SAwareness.WardTracker.Objects", "Track Objects", function()
+                for k, v in pairs(WardTracker.MenuItems) do
+                    Common.CreateCheckbox("SAwareness.WardTracker.Objects." .. k, v, true)
+                end
+            end)
+            Menu.NewTree("SAwareness.WardTracker.Minimap", "Ward [Minimap]", function()
+                Common.CreateCheckbox("SAwareness.WardTracker.Minimap.Enabled", "Draw On Minimap", true)
+                Common.CreateSlider("SAwareness.WardTracker.Minimap.Scale", "Scale", 100, 0, 200, 1)
+            end)
+            Menu.NewTree("SAwareness.WardTracker.World", "Ward [World]", function()
+                Common.CreateCheckbox("SAwareness.WardTracker.World.Enabled", "Draw On Object", true)
+                Common.CreateSlider("SAwareness.WardTracker.World.Scale", "Scale", 100, 0, 200, 1)
+                Common.CreateSlider("SAwareness.WardTracker.World.FontSize", "Font Size", 20, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.WardTracker.World.FontColor", "Font Color", 0xFFFFFFFF)
+                Common.CreateSlider("SAwareness.WardTracker.World.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
+                Common.CreateSlider("SAwareness.WardTracker.World.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
+            end)
         end)
-        Menu.NewTree("SAwareness.WardTracker.Minimap", "Ward [Minimap]", function()
-            Common.CreateCheckbox("SAwareness.WardTracker.Minimap.Enabled", "Draw On Minimap", true)
-            Menu.Text("Scale        - "); Menu.SameLine(); Common.CreateSlider("SAwareness.WardTracker.Minimap.Scale", " ", 100, 0, 200, 1)
+
+        Menu.NewTree("SAwareness.WardTracker.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("WardTracker")
         end)
-        Menu.NewTree("SAwareness.WardTracker.World", "Ward [World]", function()
-            Common.CreateCheckbox("SAwareness.WardTracker.World.Enabled", "Draw On Object", true)
-            Menu.Text("Scale          - "); Menu.SameLine(); Common.CreateSlider("SAwareness.WardTracker.World.Scale", " ", 100, 0, 200, 1)
-            Menu.Text("Font Family    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.WardTracker.World.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name      - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.WardTracker.World.FontName", " ", 0, Common.FontData.FontDisplayNames[WardTracker.Get("World.FontFamily") + 1])
-            Menu.Text("Font Size      - "); Menu.SameLine(); Common.CreateSlider("SAwareness.WardTracker.World.FontSize", " ", 20, 0, 50, 1)
-            Menu.Text("Font Color     - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.WardTracker.World.FontColor", " ", 0xFFFFFFFF)
-            Menu.Text("Font X Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.WardTracker.World.FontOffsetX", " ", 0, -200, 200, 1)
-            Menu.Text("Font Y Offset  -"); Menu.SameLine(); Common.CreateSlider("SAwareness.WardTracker.World.FontOffsetY", " ", 0, -200, 200, 1)
-        end)
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("WardTracker")
     end)
 end
 
 function WardTracker.Get(value)
 	return Menu.Get("SAwareness.WardTracker." .. value, true)
-end
-
-function WardTracker.GetFontName(element)
-    local fontFamily = WardTracker.Get(element .. ".FontFamily") + 1
-    local fontName = WardTracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function WardTracker.OnProcessSpell(unit, spell)
@@ -2615,7 +2547,6 @@ function WardTracker.OnDraw()
     local font = WardTracker.Font
     font:SetColor(WardTracker.Get("World.FontColor"))
     font:SetSize(WardTracker.Get("World.FontSize") * WardTracker.Scale)
-    font:SetFont(WardTracker.GetFontName("World"))
 
     local gameTime = Game.GetTime()
     for k, ward in pairs(WardTracker.ActiveWards) do
@@ -2997,40 +2928,33 @@ end
 function JungleTracker.LoadConfig()
     Menu.NewTree("SAwareness.JungleTracker", "Jungle Tracker", function()
         Common.CreateCheckbox("SAwareness.JungleTracker.Enabled", "Enabled", true)
-        Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
-        Menu.NewTree("SAwareness.JungleTracker.World", "Jungle Timer [World]", function()
-            Common.CreateCheckbox("SAwareness.JungleTracker.World.Enabled", "Draw On Camp", true)
-            Common.CreateCheckbox("SAwareness.JungleTracker.World.DrawSprite", "Draw Sprite", true)
-            if JungleTracker.Get("World.DrawSprite") then
-                Menu.Text("Scale        -"); Menu.SameLine(); Common.CreateSlider("SAwareness.JungleTracker.World.Scale", " ", 100, 0, 200, 1)
-                Menu.Text("Transparency - "); Menu.SameLine(); Common.CreateSlider("SAwareness.JungleTracker.World.Alpha", " ", 255, 0, 255, 1)
-            end
-            Menu.Text("Font Family  - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.JungleTracker.World.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.JungleTracker.World.FontName", " ", 0, Common.FontData.FontDisplayNames[JungleTracker.Get("World.FontFamily") + 1])
-            Menu.Text("Font Size    - "); Menu.SameLine(); Common.CreateSlider("SAwareness.JungleTracker.World.FontSize", " ", 20, 0, 50, 1)
-            Menu.Text("Font Color   - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.JungleTracker.World.FontColor", " ", 0xFFFFFFFF)
+
+        Menu.NewTree("SAwareness.JungleTracker.ElementSettings", "Element Settings", function()
+            Menu.NewTree("SAwareness.JungleTracker.World", "Jungle Timer [World]", function()
+                Common.CreateCheckbox("SAwareness.JungleTracker.World.Enabled", "Draw On Camp", true)
+                Common.CreateCheckbox("SAwareness.JungleTracker.World.DrawSprite", "Draw Sprite", true)
+                if JungleTracker.Get("World.DrawSprite") then
+                    Common.CreateSlider("SAwareness.JungleTracker.World.Scale", "Scale", 100, 0, 200, 1)
+                    Common.CreateSlider("SAwareness.JungleTracker.World.Alpha", "Transparency", 255, 0, 255, 1)
+                end
+                Common.CreateSlider("SAwareness.JungleTracker.World.FontSize", "Font Size", 20, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.JungleTracker.World.FontColor", "Font Color", 0xFFFFFFFF)
+            end)
+            Menu.NewTree("SAwareness.JungleTracker.Minimap", "Jungle Timer [Minimap]", function()
+                Common.CreateCheckbox("SAwareness.JungleTracker.Minimap.Enabled", "Draw On Minimap", true)
+                Common.CreateCheckbox("SAwareness.JungleTracker.Minimap.DrawRect", "Draw Semi-transparent Rectangle Behing Font", true)
+                Common.CreateSlider("SAwareness.JungleTracker.Minimap.FontSize", "Font Size", 18, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.JungleTracker.Minimap.FontColor", "Font Color", 0xFFFFFFFF)
+            end)
         end)
-        Menu.NewTree("SAwareness.JungleTracker.Minimap", "Jungle Timer [Minimap]", function()
-            Common.CreateCheckbox("SAwareness.JungleTracker.Minimap.Enabled", "Draw On Minimap", true)
-            Common.CreateCheckbox("SAwareness.JungleTracker.Minimap.DrawRect", "Draw Semi-transparent Rectangle Behing Font", true)
-            Menu.Text("Font Family  - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.JungleTracker.Minimap.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.JungleTracker.Minimap.FontName", " ", 0, Common.FontData.FontDisplayNames[JungleTracker.Get("Minimap.FontFamily") + 1])
-            Menu.Text("Font Size    - "); Menu.SameLine(); Common.CreateSlider("SAwareness.JungleTracker.Minimap.FontSize", " ", 18, 0, 50, 1)
-            Menu.Text("Font Color   - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.JungleTracker.Minimap.FontColor", " ", 0xFFFFFFFF)
+        Menu.NewTree("SAwareness.JungleTracker.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("JungleTracker")
         end)
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("JungleTracker")
     end)
 end
 
 function JungleTracker.Get(value)
 	return Menu.Get("SAwareness.JungleTracker." .. value, true)
-end
-
-function JungleTracker.GetFontName(element)
-    local fontFamily = JungleTracker.Get(element .. ".FontFamily") + 1
-    local fontName = JungleTracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function JungleTracker.OnTick()    
@@ -3055,7 +2979,6 @@ function JungleTracker.UpdateDrawings()
     local mm_Font = JungleTracker.Fonts.Minimap    
     mm_Font:SetColor(JungleTracker.Get("Minimap.FontColor"))
     mm_Font:SetSize(JungleTracker.Get("Minimap.FontSize"))
-    mm_Font:SetFont(JungleTracker.GetFontName("Minimap"))
 
     local world_DrawSprite = JungleTracker.Get("World.DrawSprite")
     local world_Sprite = JungleTracker.Sprites.World
@@ -3065,7 +2988,6 @@ function JungleTracker.UpdateDrawings()
     local world_Font = JungleTracker.Fonts.World
     world_Font:SetColor(JungleTracker.Get("World.FontColor"))
     world_Font:SetSize(JungleTracker.Get("World.FontSize") * JungleTracker.Scale)
-    world_Font:SetFont(JungleTracker.GetFontName("World"))
 
     local mousePos = Renderer.GetMousePos()    
     for campID, camp in pairs(JungleTracker.Camps) do
@@ -3228,23 +3150,19 @@ end
 function BaronTracker.LoadConfig()
     Menu.NewTree("SAwareness.BaronTracker", "Baron Tracker", function()
         Common.CreateCheckbox("SAwareness.BaronTracker.Enabled", "Enabled", true)
-        Common.CreateCheckbox("SAwareness.BaronTracker.Drag", "Allow To Drag By SHIFT + LMB", true)
-        Menu.Separator(); Menu.Text("[Position Settings]", true); Menu.Separator()
-        Menu.Text("X - "); Menu.SameLine(); Common.CreateSlider("SAwareness.BaronTracker.X", " ", 100, 0, Resolution.x, 1)
-        Menu.Text("Y - "); Menu.SameLine(); Common.CreateSlider("SAwareness.BaronTracker.Y", " ", 100, 0, Resolution.y, 1)
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("BaronTracker")
+        Menu.NewTree("SAwareness.BaronTracker.PositionSettings", "Position Settings", function()
+            Common.CreateSlider("SAwareness.BaronTracker.X", "X", 100, 0, Resolution.x, 1)
+            Common.CreateSlider("SAwareness.BaronTracker.Y", "Y", 100, 0, Resolution.y, 1)
+            Common.CreateCheckbox("SAwareness.BaronTracker.Drag", "Allow To Drag By SHIFT + LMB", true)
+        end)
+        Menu.NewTree("SAwareness.BaronTracker.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("BaronTracker")
+        end)
     end)
 end
 
 function BaronTracker.Get(value)
 	return Menu.Get("SAwareness.BaronTracker." .. value, true)
-end
-
-function BaronTracker.GetFontName(element)
-    local fontFamily = BaronTracker.Get(element .. ".FontFamily") + 1
-    local fontName = BaronTracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function BaronTracker.OnTick()
@@ -3376,8 +3294,9 @@ end
 function CloneTracker.LoadConfig()
     Menu.NewTree("SAwareness.CloneTracker", "Clone Tracker", function()
         Common.CreateCheckbox("SAwareness.CloneTracker.Enabled", "Enabled", true)
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("CloneTracker")
+        Menu.NewTree("SAwareness.CloneTracker.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("CloneTracker")
+        end)
     end)
 end
 
@@ -3449,30 +3368,28 @@ end
 function Radar.LoadConfig()
     Menu.NewTree("SAwareness.Radar", "Radar", function()
         Common.CreateCheckbox("SAwareness.Radar.Enabled", "Enabled", true)
-        Menu.Separator(); Menu.Text("[Appearance Settings]", true); Menu.Separator()
-        Common.CreateDropdown("SAwareness.Radar.Style", " ", 0, { "ESP Lines", "Round Sprites" })
-        Menu.Separator(); Menu.Text("[Element Settings]", true); Menu.Separator()
-        Menu.Text("Max Distance - "); Menu.SameLine(); Common.CreateSlider("SAwareness.Radar.Range", " ", 3000, 1000, 5000, 1)
-        if Radar.Get("Style") == 0 then
-            Menu.Text("Line Color   - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.Radar.LineColor", "", 0xFF00003E)
-            Menu.Text("Font Family  - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.Radar.FontFamily", " ", 2, Common.FontData.FontFamily)
-            Menu.Text("Font Name    - "); Menu.SameLine(); Common.CreateDropdown("SAwareness.Radar.FontName", " ", 0, Common.FontData.FontDisplayNames[Radar.Get("FontFamily") + 1])
-            Menu.Text("Font Size    - "); Menu.SameLine(); Common.CreateSlider("SAwareness.Radar.FontSize", " ", 20, 0, 50, 1)
-            Menu.Text("Font Color   - "); Menu.SameLine(); Common.CreateColorPicker("SAwareness.Radar.FontColor", " ", 0xFFFFFFFF)
-        end
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("Radar")
+        
+        Menu.NewTree("SAwareness.Radar.AppearanceSettings", "Appearance Settings", function()
+            Common.CreateDropdown("SAwareness.Radar.Style", "Style", 0, { "ESP Lines", "Round Sprites" })
+        end)
+
+        Menu.NewTree("SAwareness.Radar.ElementSettings", "Element Settings", function()
+            Common.CreateSlider("SAwareness.Radar.Range", "Max Distance", 3000, 1000, 5000, 1)
+            if Radar.Get("Style") == 0 then
+                Common.CreateColorPicker("SAwareness.Radar.LineColor", "Line Color", 0xFF00003E)
+                Common.CreateSlider("SAwareness.Radar.FontSize", "Font Size", 20, 0, 50, 1)
+                Common.CreateColorPicker("SAwareness.Radar.FontColor", "Font Color", 0xFFFFFFFF)
+            end
+        end)
+
+        Menu.NewTree("SAwareness.Radar.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("Radar")
+        end)
     end)
 end
 
 function Radar.Get(value)
 	return Menu.Get("SAwareness.Radar." .. value, true)
-end
-
-function Radar.GetFontName()
-    local fontFamily = Radar.Get("FontFamily") + 1
-    local fontName = Radar.Get("FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function Radar.OnDraw()
@@ -3489,7 +3406,6 @@ function Radar.OnDraw()
     local font = Radar.Fonts.Main
     font:SetColor(Radar.Get("FontColor"))
     font:SetSize(Radar.Get("FontSize"))
-    font:SetFont(Radar.GetFontName())
 
     for k, data in pairs(Script.Modules.MIATracker.Data) do
         local hero = data.Hero
@@ -3594,19 +3510,14 @@ function DashTracker.LoadConfig()
     Menu.NewTree("SAwareness.DashTracker", "Dash Tracker", function()
         Common.CreateCheckbox("SAwareness.DashTracker.Enabled", "Enabled", true)
 
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("DashTracker")
+        Menu.NewTree("SAwareness.DashTracker.ModuleSettings", "Module Settings", function()
+            Common.CreateResetButton("DashTracker")
+        end)
     end)
 end
 
 function DashTracker.Get(value)
 	return Menu.Get("SAwareness.DashTracker." .. value, true)
-end
-
-function DashTracker.GetFontName(element)
-    local fontFamily = DashTracker.Get(element .. ".FontFamily") + 1
-    local fontName = DashTracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
 end
 
 function DashTracker.OnDraw()
@@ -3670,147 +3581,6 @@ end
 --#endregion
 
 --[[
-    ██████  ██    ██ ███████ ███████     ████████ ██████   █████   ██████ ██   ██ ███████ ██████  
-    ██   ██ ██    ██ ██      ██             ██    ██   ██ ██   ██ ██      ██  ██  ██      ██   ██ 
-    ██████  ██    ██ █████   █████          ██    ██████  ███████ ██      █████   █████   ██████  
-    ██   ██ ██    ██ ██      ██             ██    ██   ██ ██   ██ ██      ██  ██  ██      ██   ██ 
-    ██████   ██████  ██      ██             ██    ██   ██ ██   ██  ██████ ██   ██ ███████ ██   ██                                                                                            
-]]
-
---#region Buff Tracker
-
-local BuffTracker = Script.Modules.BuffTracker
-
-BuffTracker.Fonts = {}
-BuffTracker.Sprites = {}
-
-function BuffTracker.Initialize()
-    BuffTracker.LoadSprites()
-    BuffTracker.LoadFonts()
-end
-
-function BuffTracker.LoadSprites()
-end
-
-function BuffTracker.LoadFonts()
-end
-
-function BuffTracker.LoadConfig()
-    Menu.NewTree("SAwareness.BuffTracker", "Buff Tracker", function()
-        Common.CreateCheckbox("SAwareness.BuffTracker.Enabled", "Enabled", true)
-
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("BuffTracker")
-    end)
-end
-
-function BuffTracker.Get(value)
-	return Menu.Get("SAwareness.BuffTracker." .. value, true)
-end
-
-function BuffTracker.GetFontName(element)
-    local fontFamily = BuffTracker.Get(element .. ".FontFamily") + 1
-    local fontName = BuffTracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
-end
-
---#endregion
-
---[[
-    ███████ ██   ██  █████  ██████  ███████ ██████      ███████ ██   ██ ██████  
-    ██      ██   ██ ██   ██ ██   ██ ██      ██   ██     ██       ██ ██  ██   ██ 
-    ███████ ███████ ███████ ██████  █████   ██   ██     █████     ███   ██████  
-         ██ ██   ██ ██   ██ ██   ██ ██      ██   ██     ██       ██ ██  ██      
-    ███████ ██   ██ ██   ██ ██   ██ ███████ ██████      ███████ ██   ██ ██                                                                            
-]]
-
---#region Shared Experience
-
-local WaveTracker = Script.Modules.WaveTracker
-
-WaveTracker.Fonts = {}
-WaveTracker.Sprites = {}
-
-function WaveTracker.Initialize()
-    WaveTracker.LoadSprites()
-    WaveTracker.LoadFonts()
-end
-
-function WaveTracker.LoadSprites()
-end
-
-function WaveTracker.LoadFonts()
-end
-
-function WaveTracker.LoadConfig()
-    Menu.NewTree("SAwareness.WaveTracker", "Shared Experience", function()
-        Common.CreateCheckbox("SAwareness.WaveTracker.Enabled", "Enabled", true)
-
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("WaveTracker")
-    end)
-end
-
-function WaveTracker.Get(value)
-	return Menu.Get("SAwareness.WaveTracker." .. value, true)
-end
-
-function WaveTracker.GetFontName(element)
-    local fontFamily = WaveTracker.Get(element .. ".FontFamily") + 1
-    local fontName = WaveTracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
-end
-
---#endregion
-
---[[
-    ██     ██  █████  ██    ██ ███████ ████████ ██████   █████   ██████ ██   ██ ███████ ██████  
-    ██     ██ ██   ██ ██    ██ ██         ██    ██   ██ ██   ██ ██      ██  ██  ██      ██   ██ 
-    ██  █  ██ ███████ ██    ██ █████      ██    ██████  ███████ ██      █████   █████   ██████  
-    ██ ███ ██ ██   ██  ██  ██  ██         ██    ██   ██ ██   ██ ██      ██  ██  ██      ██   ██ 
-     ███ ███  ██   ██   ████   ███████    ██    ██   ██ ██   ██  ██████ ██   ██ ███████ ██   ██                                                                                           
-]]
-
---#region Wave Tracker
-
-local WaveTracker = Script.Modules.WaveTracker
-
-WaveTracker.Fonts = {}
-WaveTracker.Sprites = {}
-
-function WaveTracker.Initialize()
-    WaveTracker.LoadSprites()
-    WaveTracker.LoadFonts()
-end
-
-function WaveTracker.LoadSprites()
-end
-
-function WaveTracker.LoadFonts()
-end
-
-function WaveTracker.LoadConfig()
-    Menu.NewTree("SAwareness.WaveTracker", "Wave Tracker", function()
-        Common.CreateCheckbox("SAwareness.WaveTracker.Enabled", "Enabled", true)
-
-        Menu.Separator(); Menu.Text("[Module Settings]", true); Menu.Separator()
-        Common.CreateResetButton("WaveTracker")
-    end)
-end
-
-function WaveTracker.Get(value)
-	return Menu.Get("SAwareness.WaveTracker." .. value, true)
-end
-
-function WaveTracker.GetFontName(element)
-    local fontFamily = WaveTracker.Get(element .. ".FontFamily") + 1
-    local fontName = WaveTracker.Get(element .. ".FontName") + 1
-    return Common.FontData.FontNames[fontFamily][fontName]
-end
-
---#endregion
-
---[[
     ██ ███    ██ ██ ████████ ██  █████  ██      ██ ███████ ███████ 
     ██ ████   ██ ██    ██    ██ ██   ██ ██      ██    ███  ██      
     ██ ██ ██  ██ ██    ██    ██ ███████ ██      ██   ███   █████   
@@ -3849,7 +3619,7 @@ local function Initialize()
 
         Menu.Text("Version: " .. Script.Version)
         Menu.Text("Last Update: " .. Script.LastUpdate)
-        Menu.Text("Author:"); Menu.SameLine(); Menu.ColoredText("Shulepin", 0x9400d3FF, false)
+        Menu.Text("Author: Shulepin")
 
         Menu.Separator()
     end)
