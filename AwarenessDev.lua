@@ -1527,7 +1527,15 @@ function RecallTracker.OnDraw()
                         local data = BaseUlt.Data
                         if data[v.Unit.Handle] and data[v.Unit.Handle].state == true then
                             local baseUltNeed = (100 / v.RecallTime * data[v.Unit.Handle].time) / 100
-                            Common.DrawFilledRect({x + 3 + (h - 6) * baseUltNeed, y, 2, w}, 0xFF3737FF)
+                            local textVector = {x + 3 + (h - 6) * baseUltNeed, y, 2, w}
+                            Common.DrawFilledRect(textVector, 0xFF3737FF)
+                            
+                            local font = RecallTracker.Fonts.Main
+
+                            font
+                                :SetColor(0xFF3737FF)
+                                :SetSize(RecallTracker.Get("Bar.FontSize"))
+                                :Draw(Vector(x + 3 + (h - 6) * baseUltNeed, y - 20), "R")
                         end
                     end
                 end
