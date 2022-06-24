@@ -377,7 +377,6 @@ SideHUD.Y = 0
 SideHUD.Scale = 1
 SideHUD.Fonts = {}
 SideHUD.Rect = {}
-SideHUD.MoveOffset = {}
 SideHUD.Data = {
     ["HP"] = {},
     ["MP"] = {},
