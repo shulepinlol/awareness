@@ -3617,10 +3617,26 @@ local function Initialize()
             Menu.ColoredText("Now Press F5 To Unload Awareness!", 0xFF0000FF, true)
             return true
         end
-
+	
+	--[[
         for _, module in Common.OrderedPairs(Script.Modules) do
         	module.LoadConfig()
-        end
+        end]]
+	--// Temp fix
+	Script.Modules.SideHUD.LoadConfig()
+	Script.Modules.CDTracker.LoadConfig()
+	Script.Modules.MIATracker.LoadConfig()
+	Script.Modules.TurretRange.LoadConfig()
+        Script.Modules.InhibTimer.LoadConfig()
+        Script.Modules.PathTracker.LoadConfig()
+        Script.Modules.WardTracker.LoadConfig()
+        Script.Modules.JungleTracker.LoadConfig()
+	Script.Modules.RecallTracker.LoadConfig()
+        Script.Modules.Radar.LoadConfig()
+	Script.Modules.BaronTracker.LoadConfig()
+	Script.Modules.BaseUlt.LoadConfig()
+	Script.Modules.CloneTracker.LoadConfig()
+	Script.Modules.DashTracker.LoadConfig()
 
         Menu.Separator()
 
