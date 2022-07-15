@@ -3468,37 +3468,37 @@ DashTracker.SpellData = {
     ["Deceive"] = {
         ["DisplayName"] = "Shaco | Q | Deceive",
         ["Range"] = 400,
-        ["SpritePath"] = "Spells\\Deceive.png",
+        ["SpritePath"] = "Spells\\Shaco\\Q.png",
     },
     ["EzrealE"] = {
         ["DisplayName"] = "Ezreal | E | Arcane Shift",
         ["Range"] = 475,
-        ["SpritePath"] = "Spells\\EzrealE.png",
+        ["SpritePath"] = "Spells\\Ezreal\\E.png",
     },
     ["KatarinaE"] = {
         ["DisplayName"] = "Katarina | E | Shunpo",
         ["Range"] = 725,
-        ["SpritePath"] = "Spells\\KatarinaEWrapper.png",
+        ["SpritePath"] = "Spells\\Katarina\\E.png",
     },
     ["KatarinaEDagger"] = {
         ["DisplayName"] = "Katarina | E | Shunpo [Dagger]",
         ["Range"] = 725,
-        ["SpritePath"] = "Spells\\KatarinaEWrapper.png",
+        ["SpritePath"] = "Spells\\Katarina\\E.png",
     },
     ["LeblancW"] = {
         ["DisplayName"] = "Leblanc | W | Distortion",
         ["Range"] = 600,
-        ["SpritePath"] = "Spells\\LeblancW.png",
+        ["SpritePath"] = "Spells\\Leblanc\\W.png",
     },
     ["VayneTumble"] = {
         ["DisplayName"] = "Vayne | Q | Tumble",
         ["Range"] = 300,
-        ["SpritePath"] = "Spells\\VayneTumble.png", 
+        ["SpritePath"] = "Spells\\Vayne\\Q.png", 
     },
     ["ZedW"] = {
         ["DisplayName"] = "Zed | W | Living Shadow",
         ["Range"] = 700,
-        ["SpritePath"] = "Spells\\ZedW.png", 
+        ["SpritePath"] = "Spells\\Zed\\W.png", 
     },
 }
 
