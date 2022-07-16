@@ -574,7 +574,7 @@ function SideHUD.UpdateDrag()
         end
 
         local rect = SideHUD.Rect
-        if not SideHUD.MoveOffset and rect and Common.CursorIsUnder(rect.x, rect.y, rect.z, rect.w) and Common.LMBPressed then
+        if not SideHUD.MoveOffset and rect and Common.LMBPressed and Common.CursorIsUnder(rect.x, rect.y, rect.z, rect.w) then
             SideHUD.MoveOffset = {
                 x = rect.x - cursorPos.x + 5,
                 y = rect.y - cursorPos.y + 5
@@ -1380,15 +1380,17 @@ function RecallTracker.Initialize()
     RecallTracker.LoadFonts()
 
     for handle, hero in pairs(SLib.Heroes) do
-        RecallTracker.Data[hero.Handle] = {
-            RecallTime = 0,
-            Unit = SLib.Heroes[handle],
-            StartTime = 0,
-            Finish = nil,
-            Status = "None",
-            InterruptTime = 0,
-            FinishTime = 0,
-        }
+        if hero.IsEnemy then
+            RecallTracker.Data[hero.Handle] = {
+                RecallTime = 0,
+                Unit = SLib.Heroes[handle],
+                StartTime = 0,
+                Finish = nil,
+                Status = "None",
+                InterruptTime = 0,
+                FinishTime = 0,
+            }
+        end
     end
 end
 
@@ -1556,15 +1558,13 @@ function RecallTracker.OnDraw()
                 RecallTracker.__BarTextSize = {x = textExtent.x/2, y = textExtent.y/2}
             end
             
-            Common.DrawRectOutline({x, y, h, w}, 3, 0x000000FF)
             Common.DrawFilledRect({x, y, h, w}, borderColor)
             Common.DrawFilledRect({x + 3, y + 3, h - 6, w - 6}, rBarColor)
-            Common.DrawRectOutline({x + 3, y + 3, h - 6, w - 6}, 3, 0x000000FF)
-            Renderer.DrawText(Vector(x + (h / 2 - (RecallTracker.__BarTextSize.x)),y + (w / 2 - (RecallTracker.__BarTextSize.y))), nil, text, 0xFFFFFFFF)
+            Renderer.DrawText({x=x + (h / 2 - (RecallTracker.__BarTextSize.x)), y=y + (w / 2 - (RecallTracker.__BarTextSize.y))}, nil, text, 0xFFFFFFFF)
         end
 
         local rect = RecallTracker.Rect
-        if not RecallTracker.MoveOffset and rect and Common.CursorIsUnder(rect.x, rect.y, rect.z, rect.w) and Common.LMBPressed then
+        if not RecallTracker.MoveOffset and rect and Common.LMBPressed and Common.CursorIsUnder(rect.x, rect.y, rect.z, rect.w) then
             RecallTracker.MoveOffset = {
                 x = rect.x - cursorPos.x + 5,
                 y = rect.y - cursorPos.y + 5
@@ -3192,7 +3192,7 @@ function BaronTracker.OnDraw()
         shouldDraw = true
         if BaronTracker.Get("Drag") then
             local rect = BaronTracker.Rect
-            if not BaronTracker.MoveOffset and rect and Common.CursorIsUnder(rect.x, rect.y, rect.z, rect.w) and Common.LMBPressed then
+            if not BaronTracker.MoveOffset and rect and Common.LMBPressed and Common.CursorIsUnder(rect.x, rect.y, rect.z, rect.w) then
                 BaronTracker.MoveOffset = {
                     x = rect.x - cursorPos.x + 5,
                     y = rect.y - cursorPos.y + 5
@@ -3230,11 +3230,9 @@ function BaronTracker.OnDraw()
     if shouldDraw then
         local fontData = BaronTracker.Fonts.Main
         local textExtent = fontData.Font:CalcTextSize(text, true)
-        Common.DrawRectOutline({x, y, ScreenPosPct.x * 25, ScreenPosPct.y * 5}, 3, 0x000000FF)
         Common.DrawFilledRect({x, y, ScreenPosPct.x * 25, ScreenPosPct.y * 5}, 0x796C43FF)
         Common.DrawFilledRect({x + 3, y + 3, ScreenPosPct.x * 25 - 6, ScreenPosPct.y * 5 - 6}, 0x000000B4)
-        Common.DrawRectOutline({x + 3, y + 3, ScreenPosPct.x * 25 - 6, ScreenPosPct.y * 5 - 6}, 3, 0x000000FF)
-        fontData.Font:DrawText(Vector(x + ((ScreenPosPct.x * 25 - textExtent.x) * 0.5),y + ((ScreenPosPct.y * 5  - textExtent.y) * 0.5)), text, 0xFFFFFFFF)
+        fontData.Font:DrawText({x=x + ((ScreenPosPct.x * 25 - textExtent.x) * 0.5), y=y + ((ScreenPosPct.y * 5  - textExtent.y) * 0.5)}, text, 0xFFFFFFFF)
     end
 end
 
@@ -3644,7 +3642,6 @@ local function Initialize()
         Menu.Text("Last Update: " .. Script.LastUpdate)
         Menu.Text("Author: Shulepin")
 
-        Menu.Separator()
     end)
 
     if Menu.Get("SAwareness.Disable") then
