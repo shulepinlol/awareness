@@ -584,7 +584,7 @@ function SideHUD.UpdateDrag()
             stoppedDragging = true            
         end
 
-        if SideHUD.MoveOffset and rect and rect.x and rect.y then
+        if SideHUD.MoveOffset and SideHUD.MoveOffset.x and rect and rect.x and rect.y then
             rect.x = SideHUD.MoveOffset.x + cursorPos.x
             rect.x = rect.x > 0 and rect.x or 0
             rect.x = rect.x < Resolution.x - rect.z and rect.x or Resolution.x - rect.z
@@ -1573,7 +1573,7 @@ function RecallTracker.OnDraw()
             RecallTracker.MoveOffset = nil
         end
 
-        if RecallTracker.MoveOffset and rect and rect.x and rect.y then
+        if RecallTracker.MoveOffset and RecallTracker.MoveOffset.x and rect and rect.x and rect.y then
             rect.x = RecallTracker.MoveOffset.x + cursorPos.x
             rect.x = rect.x > 0 and rect.x or 0
             rect.x = rect.x < Resolution.x - rect.z and rect.x or Resolution.x - rect.z
@@ -3201,7 +3201,7 @@ function BaronTracker.OnDraw()
                 BaronTracker.MoveOffset = nil
             end
 
-            if BaronTracker.MoveOffset then
+            if BaronTracker.MoveOffset and BaronTracker.MoveOffset.x then
                 rect.x = BaronTracker.MoveOffset.x + cursorPos.x
                 rect.x = rect.x > 0 and rect.x or 0
                 rect.x = rect.x < Resolution.x - rect.z and rect.x or Resolution.x - rect.z
