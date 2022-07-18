@@ -699,10 +699,9 @@ function SideHUD.UpdateDrawings()
                 if font then
                     local text = format("%d", hero.TimeUntilRespawn.Value)
                     
-                    -- //TODO: Move textExtent/textPosition out of DrawQueue function when it can be called from out of OnDraw
+                    local textExtent = font.Font:CalcTextSize(text)
+                    local textPosition = {x = mainVec.x + deathTimerSize[1] - textExtent.x*0.5, y = mainVec.y + deathTimerSize[2] - textExtent.y*0.5}
                     insert(SideHUD.DrawQueue, function() 
-                        local textExtent = font.Font:CalcTextSize(text)
-                        local textPosition = {x = mainVec.x + deathTimerSize[1] - textExtent.x*0.5, y = mainVec.y + deathTimerSize[2] - textExtent.y*0.5}
                         font:Draw(textPosition, text, handle) 
                     end)                    
                 end
@@ -777,13 +776,14 @@ function SideHUD.UpdateDrawings()
                     if font then
                         local text = summonerFm == 0 and format("%d", floor(remainingTime)) or 
                                     summonerFm == 1 and Common.DecToMin(remainingTime) or 
-                                    summonerFm == 2 and Common.DecToMin3(remainingTime)                        
-                        insert(SideHUD.DrawQueue, function() 
-                            local textExtent = font.Font:CalcTextSize(text)         
-                            local textPosition = {
-                                x = spritePosition.x + summonerSize[1] - textExtent.x/2,
-                                y = spritePosition.y + summonerSize[2] - textExtent.y/2
-                            }
+                                    summonerFm == 2 and Common.DecToMin3(remainingTime)  
+                                    
+                        local textExtent = font.Font:CalcTextSize(text)         
+                        local textPosition = {
+                            x = spritePosition.x + summonerSize[1] - textExtent.x/2,
+                            y = spritePosition.y + summonerSize[2] - textExtent.y/2
+                        }
+                        insert(SideHUD.DrawQueue, function()
                             font:Draw(textPosition, text) 
                         end)
                     end
@@ -816,13 +816,15 @@ function SideHUD.UpdateDrawings()
                 if font then
                     local text = ultimateFm == 0 and format("%d", floor(remainingTime)) or 
                         ultimateFm == 1 and Common.DecToMin(remainingTime) or 
-                        ultimateFm == 2 and Common.DecToMin3(remainingTime)                    
+                        ultimateFm == 2 and Common.DecToMin3(remainingTime)   
+                        
+                    local textExtent = font.Font:CalcTextSize(text)
+                    local textPosition = {
+                        x = spritePosition.x + ultimateSize[1] - textExtent.x/2,
+                        y = spritePosition.y + ultimateSize[2] - textExtent.y/2
+                    }
+                    
                     insert(SideHUD.DrawQueue, function() 
-                        local textExtent = font.Font:CalcTextSize(text)
-                        local textPosition = {
-                            x = spritePosition.x + ultimateSize[1] - textExtent.x/2,
-                            y = spritePosition.y + ultimateSize[2] - textExtent.y/2
-                        }
                         font:Draw(textPosition, text) 
                     end)                        
                 end
