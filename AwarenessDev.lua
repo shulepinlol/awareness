@@ -17,8 +17,8 @@ end
 
 local Script = {
     Name = "Awareness",
-    Version = "1.1.0",
-    LastUpdate = "19/06/2022",
+    Version = "1.1.1",
+    LastUpdate = "22, July 2022",
     Initialized = false,
     Disabled = false,
     Modules = {
@@ -270,7 +270,6 @@ function InhibTimer.LoadConfig()
             end)
             Menu.NewTree("SAwareness.InhibTimer.WTMM", "Inhibitor Timer [Minimap]", function()
                 Common.CreateCheckbox("SAwareness.InhibTimer.WTMM.Rect", "Draw Semi-transparent Rectangle Behing Font", true)
-                Menu.Text("")
                 Common.CreateSlider("SAwareness.InhibTimer.WTMM.FontSize", "Font Size", 16, 0, 50, 1)
                 Common.CreateColorPicker("SAwareness.InhibTimer.WTMM.FontColor", "Font Color", 0xFFFFFFFF)
             end)
@@ -1744,9 +1743,9 @@ function BaseUlt.LoadConfig()
     Menu.NewTree("SAwareness.BaseUlt", "BaseUlt", function()
         Common.CreateCheckbox("SAwareness.BaseUlt.Enabled", "Enabled", true)
         Common.CreateCheckbox("SAwareness.BaseUlt.Combo", "Don't use in combo mode", false)
-        Menu.Text("", true)
-        Menu.Text("[Information]")
-        Menu.Text("Supported Heroes: Ashe, Draven, Ezreal, Jinx, Karthus, Senna")
+        Menu.Separator("Information")
+        Menu.Text("Supported Heroes:")
+        Menu.Text("Ashe, Draven, Ezreal, Jinx, Karthus, Senna")
     end)
 end
 
@@ -2067,7 +2066,6 @@ function MIATracker.LoadConfig()
                 Common.CreateSlider("SAwareness.MIATracker.Minimap.Scale", "Scale", 100, 0, 200, 1)
                 Common.CreateSlider("SAwareness.MIATracker.Minimap.Alpha", "Sprite Transparency", 255, 0, 255, 1)
                 Common.CreateColorPicker("SAwareness.MIATracker.Minimap.BorderColor", "Border Color", 0xFFF800FF)
-                Menu.Text("", true)
                 Common.CreateCheckbox("SAwareness.MIATracker.Minimap.DrawTimer", "Draw MIA Timer", true)
                 if MIATracker.Get("Minimap.DrawTimer") then
                     Common.CreateCheckbox("SAwareness.MIATracker.Minimap.DrawRect", "Draw Semi-transparent Rectangle Behing Font", true)
@@ -3374,7 +3372,7 @@ end
 
 function Radar.LoadConfig()
     Menu.NewTree("SAwareness.Radar", "Radar", function()
-        Common.CreateCheckbox("SAwareness.Radar.Enabled", "Enabled", true)
+        Common.CreateCheckbox("SAwareness.Radar.Enabled", "Enabled", false)
         
         Menu.NewTree("SAwareness.Radar.AppearanceSettings", "Appearance Settings", function()
             Common.CreateDropdown("SAwareness.Radar.Style", "Style", 0, { "ESP Lines", "Round Sprites" })
@@ -3601,8 +3599,6 @@ local function Initialize()
     Menu.RegisterMenu("SAwareness", "Awareness Settings", function()
         Menu.Checkbox("SAwareness.Disable", "Disable Awareness", false)
 
-        Menu.Separator()
-
         if Script.Disabled and not Menu.Get("SAwareness.Disable") then
             Menu.ColoredText("Now Press F5 To Load Awareness!", 0xFF0000FF, true)
             return true
@@ -3638,9 +3634,7 @@ local function Initialize()
 	Script.Modules.CloneTracker.LoadConfig()
 	Script.Modules.DashTracker.LoadConfig()
 
-        Menu.Separator()
-
-        Menu.Text("Version: " .. Script.Version)
+        Menu.Separator("Version: " .. Script.Version)
         Menu.Text("Last Update: " .. Script.LastUpdate)
         Menu.Text("Author: Shulepin")
 
