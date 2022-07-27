@@ -450,10 +450,7 @@ function SideHUD.LoadSprites()
 end
 
 function SideHUD.LoadFonts()
-    SideHUD["Fonts"]["HP"] = SLib.CreateFont("Bahnschrift.ttf", 20, 0xFFFFFFFF)
-    SideHUD["Fonts"]["MP"] = SLib.CreateFont("Bahnschrift.ttf", 20, 0xFFFFFFFF)
     SideHUD["Fonts"]["Ultimate"] = SLib.CreateFont("Bahnschrift.ttf", 20, 0xFFFFFFFF)
-    SideHUD["Fonts"]["Summoners"] = SLib.CreateFont("Bahnschrift.ttf", 16, 0xFFFFFFFF)
     SideHUD["Fonts"]["ChampionLevel"] = SLib.CreateFont("Bahnschrift.ttf", 12, 0xFFFFFFFF)
     SideHUD["Fonts"]["DeathTimer"] = SLib.CreateFont("Bahnschrift.ttf", 20, 0xFFFFFFFF)
 end
@@ -463,42 +460,24 @@ function SideHUD.LoadConfig()
 		Common.CreateCheckbox("SAwareness.SideHUD.Enabled", "Enabled", false)
         
         Menu.NewTree("SAwareness.SideHUD.PositionSettings", "Position Settings", function()
-            Common.CreateSlider("SAwareness.SideHUD.X", "X", 100, 0, Resolution.x, 1)
+            Common.CreateSlider("SAwareness.SideHUD.X", "X", 600, 0, Resolution.x, 1)
             Common.CreateSlider("SAwareness.SideHUD.Y", "Y", 100, 0, Resolution.y, 1)
             Common.CreateSlider("SAwareness.SideHUD.Scale", "Scale", 75, 0, 200, 1)
-            Common.CreateSlider("SAwareness.SideHUD.Space", "Space", 0, -100, 100, 1)
+            Common.CreateSlider("SAwareness.SideHUD.Space", "Space", 10, -100, 100, 1)
             Common.CreateDropdown("SAwareness.SideHUD.Orientation", "Orientation", 0, {"Vertical", "Horizontal"})
             Common.CreateCheckbox("SAwareness.SideHUD.Drag", "Allow To Drag By SHIFT + LMB", true)
         end)
         
         Menu.NewTree("SAwareness.SideHUD.ElementSettings", "Element Settings", function()
-            Menu.NewTree("SAwareness.SideHUD.HP", "Health Bar", function()
-                Common.CreateColorPicker("SAwareness.SideHUD.HP.BarColor", "Bar Color", 0x25882EFF)
-                Common.CreateSlider("SAwareness.SideHUD.HP.FontSize", "Font Size", 20, 0, 50, 1)
-                Common.CreateColorPicker("SAwareness.SideHUD.HP.FontColor", "Font Color", 0xFFFFFFFF)
-                Common.CreateSlider("SAwareness.SideHUD.HP.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
-                Common.CreateSlider("SAwareness.SideHUD.HP.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
-            end)
-            Menu.NewTree("SAwareness.SideHUD.MP", "Mana Bar", function()
-                Common.CreateColorPicker("SAwareness.SideHUD.MP.BarColor", "Bar Color", 0x3A95B9FF)
-                Common.CreateSlider("SAwareness.SideHUD.MP.FontSize", "Font Size", 20, 0, 50, 1)
-                Common.CreateColorPicker("SAwareness.SideHUD.MP.FontColor", "Font Color", 0xFFFFFFFF)
-                Common.CreateSlider("SAwareness.SideHUD.MP.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
-                Common.CreateSlider("SAwareness.SideHUD.MP.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
-            end)
+            Common.CreateColorPicker("SAwareness.SideHUD.HP.BarColor", "Bar Color", 0x25882EFF)
+            Common.CreateColorPicker("SAwareness.SideHUD.MP.BarColor", "Bar Color", 0x3A95B9FF)
+            
             Menu.NewTree("SAwareness.SideHUD.Ultimate", "Ultimate Spell", function()
                 Common.CreateDropdown("SAwareness.SideHUD.Ultimate.Format", "Format", 2, { "Seconds", "Minutes : Seconds", "Minutes (If < 1 Then Seconds)" })
                 Common.CreateSlider("SAwareness.SideHUD.Ultimate.FontSize", "Font Size", 20, 0, 50, 1)
                 Common.CreateColorPicker("SAwareness.SideHUD.Ultimate.FontColor", "Font Color", 0xFFFFFFFF)
                 Common.CreateSlider("SAwareness.SideHUD.Ultimate.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
                 Common.CreateSlider("SAwareness.SideHUD.Ultimate.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
-            end)
-            Menu.NewTree("SAwareness.SideHUD.Summoners", "Summoner Spells", function()
-                Common.CreateDropdown("SAwareness.SideHUD.Summoners.Format", "Format", 2, { "Seconds", "Minutes : Seconds", "Minutes (If < 1 Then Seconds)" })
-                Common.CreateSlider("SAwareness.SideHUD.Summoners.FontSize", "Font Size", 16, 0, 50, 1)
-                Common.CreateColorPicker("SAwareness.SideHUD.Summoners.FontColor", "Font Color", 0xFFFFFFFF)
-                Common.CreateSlider("SAwareness.SideHUD.Summoners.FontOffsetX", "Font X Offset", 0, -200, 200, 1)
-                Common.CreateSlider("SAwareness.SideHUD.Summoners.FontOffsetY", "Font Y Offset", 0, -200, 200, 1)
             end)
             Menu.NewTree("SAwareness.SideHUD.ChampionLevel", "Champion Level", function()
                 Menu.Checkbox("SAwareness.SideHUD.ChampionLevel.Enabled", "Enabled", true)
@@ -610,7 +589,7 @@ end
 
 function SideHUD.UpdateDrawings()
     local time = Game.GetTime()
-    if (time - SideHUD.LastUpdate < 0.2) and not SideHUD.IsDragging then return end
+    if (time - SideHUD.LastUpdate < 0.5) and not SideHUD.IsDragging then return end
     SideHUD.LastUpdate = time
 
     SideHUD.DrawQueue = {}
@@ -632,22 +611,8 @@ function SideHUD.UpdateDrawings()
     local hpBarColor = SideHUD.Get("HP.BarColor")
     local mpBarColor = SideHUD.Get("MP.BarColor")
     local drawLevel  = SideHUD.Get("ChampionLevel.Enabled")
-    local summonerFm = SideHUD.Get("Summoners.Format")
     local ultimateFm = SideHUD.Get("Ultimate.Format")
 
-    local healthBarSize = {
-        (3 * hudScale) + SideHUD.Get("HP.FontOffsetX") + (125 * hudScale)/2,
-        (51 * hudScale) + SideHUD.Get("HP.FontOffsetY") + (23 * hudScale)/2
-    }
-
-    local manaBarSize = {
-        (3 * hudScale) + SideHUD.Get("MP.FontOffsetX") + (125 * hudScale)/2,
-        (74 * hudScale) + SideHUD.Get("MP.FontOffsetY") + (23 * hudScale)/2
-    }
-    local summonerSize = {
-        (23 * hudScale)/2 + SideHUD.Get("Summoners.FontOffsetX"),
-        (20 * hudScale)/2 + SideHUD.Get("Summoners.FontOffsetY")
-    }
     local ultimateSize = {
         SideHUD.Get("Ultimate.FontOffsetX") + (45 * hudScale)/2 + hudScale ,
         SideHUD.Get("Ultimate.FontOffsetY") + (45 * hudScale)/2            
@@ -658,10 +623,6 @@ function SideHUD.UpdateDrawings()
             goto skip
         end        
 
-        local hp = hero.Health.Value
-        local maxHp = hero.MaxHealth.Value
-        local mana = hero.Mana.Value
-        local maxMana = hero.MaxMana.Value
         local hpPercent = hero.HealthPercent.Value
         local mpPercent = hero.ManaPercent.Value
         local charName = hero.CharName
@@ -715,19 +676,6 @@ function SideHUD.UpdateDrawings()
                 local spritePosition = {x = x + (4 * hudScale), y = y + (54 * hudScale)}                    
                 insert(SideHUD.DrawQueue, function() sprite:Draw(spritePosition) end)
             end
-
-            local font = SideHUD.Fonts["HP"]
-            if font then 
-                local text = format("%d / %d", hp, maxHp)
-                local textExtent = (font.TextSize[handle] and font.TextSize[handle][1]) or {x=0, y=0}
-                local textPosition = {
-                    x = x + healthBarSize[1] - textExtent.x/2,
-                    y = y + healthBarSize[2] - textExtent.y/2
-                }
-                insert(SideHUD.DrawQueue, function() 
-                    font:Draw(textPosition, text, handle) 
-                end)
-            end
         end
 
         do --//* Mana Bar *//--         
@@ -737,17 +685,6 @@ function SideHUD.UpdateDrawings()
                 
                 local spritePosition = {x = x + (4 * hudScale), y = y + (77 * hudScale)}                    
                 insert(SideHUD.DrawQueue, function() sprite:Draw(spritePosition) end)
-            end
-
-            local font = SideHUD.Fonts["MP"]
-            if font then
-                local text = format("%d / %d", mana, maxMana)
-                local textExtent = (font.TextSize[handle] and font.TextSize[handle][1]) or {x=0, y=0}
-                local textPosition = {
-                    x = x + manaBarSize[1] - textExtent.x/2,
-                    y = y + manaBarSize[2] - textExtent.y/2
-                }
-                insert(SideHUD.DrawQueue, function() font:Draw(textPosition, text, handle) end)
             end
         end
 
@@ -769,22 +706,6 @@ function SideHUD.UpdateDrawings()
                         cdSprite:SetColor(0x000000CA)
                         local tmpScale = cdSprite.X * hudScale
                         insert(SideHUD.DrawQueue, function() cdSprite:SetScale(tmpScale, tmpScale):Draw(spritePosition) end)
-                    end
-                    
-                    local font = SideHUD.Fonts.Summoners
-                    if font then
-                        local text = summonerFm == 0 and format("%d", floor(remainingTime)) or 
-                                    summonerFm == 1 and Common.DecToMin(remainingTime) or 
-                                    summonerFm == 2 and Common.DecToMin3(remainingTime)  
-                                    
-                        local textExtent = font.Font:CalcTextSize(text)         
-                        local textPosition = {
-                            x = spritePosition.x + summonerSize[1] - textExtent.x/2,
-                            y = spritePosition.y + summonerSize[2] - textExtent.y/2
-                        }
-                        insert(SideHUD.DrawQueue, function()
-                            font:Draw(textPosition, text) 
-                        end)
                     end
                 end
             end
@@ -1001,7 +922,7 @@ function CDTracker.LoadConfig()
                 Common.CreateSlider("SAwareness.CDTracker.SummonerCD.X", "X Offset", 0, -500, 500, 1)
                 Common.CreateSlider("SAwareness.CDTracker.SummonerCD.Y", "Y Offset", 0, -500, 500, 1)
                 Common.CreateSlider("SAwareness.CDTracker.SummonerCD.Scale", "Scale", 100, 0, 200, 1)
-                Common.CreateDropdown("SAwareness.CDTracker.SummonerCD.Format", "Format", 1, { "Seconds", "Minutes:Seconds", "Minutes (If < 1 Then Seconds)" })
+                Common.CreateDropdown("SAwareness.CDTracker.SummonerCD.Format", "Format", 2, { "Seconds", "Minutes:Seconds", "Minutes (If < 1 Then Seconds)" })
                 Common.CreateSlider("SAwareness.CDTracker.SummonerCD.FontSize", "Font Size", 12, 0, 50, 1)
                 Common.CreateColorPicker("SAwareness.CDTracker.SummonerCD.FontColor", "Font Color", 0xFFFFFFFF)
             end)
@@ -1014,7 +935,7 @@ function CDTracker.LoadConfig()
                 Common.CreateColorPicker("SAwareness.CDTracker.ExpBar.BarColor", "Bar Color", 0xFFB600FF)
             end)
             Menu.NewTree("SAwareness.CDTracker.PassiveCD", "Passive CD", function()
-                Common.CreateCheckbox("SAwareness.CDTracker.PassiveCD.Enabled", "Draw Passive CD", true)
+                Common.CreateCheckbox("SAwareness.CDTracker.PassiveCD.Enabled", "Draw Passive CD", false)
                 Common.CreateSlider("SAwareness.CDTracker.PassiveCD.X", "X Offset", 0, -500, 500, 1)
                 Common.CreateSlider("SAwareness.CDTracker.PassiveCD.Y", "Y Offset", 0, -500, 500, 1)
                 Common.CreateSlider("SAwareness.CDTracker.PassiveCD.Scale", "Scale", 100, 0, 200, 1)
@@ -1335,7 +1256,7 @@ end
 
 function CDTracker.OnTick()
     local gameTime = Game.GetTime()
-    if gameTime - CDTracker.LastUpdate < 0.1 then return end
+    if gameTime - CDTracker.LastUpdate < 0.3 then return end
     CDTracker.LastUpdate = gameTime
 
     CDTracker.DrawQueue = {}
@@ -1876,7 +1797,7 @@ end
 
 function PathTracker.UpdateDrawings()
     local gameTime = Game.GetTime()
-    if gameTime - PathTracker.LastUpdate < 0.2 then return end
+    if gameTime - PathTracker.LastUpdate < 0.5 then return end
     PathTracker.LastUpdate = gameTime
 
     PathTracker.DrawQueue = {}
@@ -2068,13 +1989,13 @@ function MIATracker.LoadConfig()
                 Common.CreateColorPicker("SAwareness.MIATracker.Minimap.BorderColor", "Border Color", 0xFFF800FF)
                 Common.CreateCheckbox("SAwareness.MIATracker.Minimap.DrawTimer", "Draw MIA Timer", true)
                 if MIATracker.Get("Minimap.DrawTimer") then
-                    Common.CreateCheckbox("SAwareness.MIATracker.Minimap.DrawRect", "Draw Semi-transparent Rectangle Behing Font", true)
+                    Common.CreateCheckbox("SAwareness.MIATracker.Minimap.DrawRect", "Draw Semi-transparent Rectangle Behing Font", false)
                     Common.CreateSlider("SAwareness.MIATracker.Minimap.FontSize", "Font Size", 16, 0, 50, 1)
                     Common.CreateColorPicker("SAwareness.MIATracker.Minimap.FontColor", "Font Color", 0xFFFFFFFF)
                 end
             end)
             Menu.NewTree("SAwareness.MIATracker.MovementCircle", "MIA Movement Circle [Minimap]", function()
-                Common.CreateCheckbox("SAwareness.MIATracker.MovementCircle.Enabled", "Draw Movement Circle [Temporarily Disabled] ", true)
+                Common.CreateCheckbox("SAwareness.MIATracker.MovementCircle.Enabled", "Draw Movement Circle [Temporarily Disabled] ", false)
                 if MIATracker.Get("MovementCircle.Enabled") then
                     Common.CreateSlider("SAwareness.MIATracker.MovementCircle.Dist", "Travel Distance", 9000, 0, 15000, 1)
                     Common.CreateColorPicker("SAwareness.MIATracker.MovementCircle.Color", "Circle Color", 0xFFFC008C)
@@ -2973,7 +2894,7 @@ end
 
 function JungleTracker.UpdateDrawings()
     local gameTime = Game.GetTime()
-    if gameTime - JungleTracker.LastUpdate < 0.2 then return end
+    if gameTime - JungleTracker.LastUpdate < 0.5 then return end
     JungleTracker.LastUpdate = gameTime
 
     JungleTracker.DrawQueue = {}
