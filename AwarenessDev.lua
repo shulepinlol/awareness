@@ -1326,7 +1326,7 @@ function RecallTracker.LoadConfig()
 
         Menu.NewTree("SAwareness.RecallTracker.PositionSettings", "Position Settings", function()
             Common.CreateSlider("SAwareness.RecallTracker.X", "X", 490, 0, Resolution.x, 1)
-            Common.CreateSlider("SAwareness.RecallTracker.Y", "Y", 100, 0, Resolution.y, 1)
+            Common.CreateSlider("SAwareness.RecallTracker.Y", "Y", 150, 0, Resolution.y, 1)
             Common.CreateSlider("SAwareness.RecallTracker.Height", "Height", 400, 0, Resolution.x, 1)
             Common.CreateSlider("SAwareness.RecallTracker.Width", "Width", 20, 0, Resolution.x, 1)
             Common.CreateCheckbox("SAwareness.RecallTracker.Drag", "Allow To Drag By SHIFT + LMB", true)
